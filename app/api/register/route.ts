@@ -79,6 +79,7 @@ export async function POST(request: Request) {
     groupTitle: group.title,
     groupDay: group.dayLabel,
     groupTime: group.timeLabel,
+    groupDescription: group.description,
     groupCapacity: group.capacity,
     groupDuration: group.durationLabel ?? "",
     groupStart: group.startDateLabel ?? "",

@@ -55,12 +55,14 @@ export const practicalInfo = {
 } as const;
 
 /**
- * שתי הקבוצות שאפשר להירשם אליהן בטופס.
+ * מקור האמת היחיד למיפוי הקבוצות.
+ * זה המקום שממנו נגזרים גם הבורר בטופס, גם מסך האישור,
+ * גם ה-payload ל-n8n וגם המיילים. n8n לא מחזיק מיפוי משלו.
+ *
  * רביעי נגזר מ-morningGroup כדי לא לשכפל אותו.
  *
- * ⚠️ חסר לקבוצת הערב: תאריך פתיחה, מספר מפגשים, מחיר ומשך המפגש.
- * כל עוד הם null, הטופס והמייל פשוט משמיטים את השורות האלה
- * במקום להמציא ערכים. צריך למלא מול נטע לפני שהקבוצה משווקת.
+ * ⚠️ לקבוצת הערב אין תאריך פתיחה — היא קבוצה שבועית מתמשכת.
+ * שדה null פשוט לא מוצג, ולא ממציאים לו ערך.
  *
  * ⚠️ קבוצת הערב מתוארת גם ב-otherOfferings כטקסט חופשי.
  * שווה לאחד את שני המקומות בהמשך.
@@ -71,26 +73,31 @@ export const registrationGroups = [
     title: morningGroup.title,
     dayLabel: morningGroup.dayLabel,
     timeLabel: morningGroup.timeLabel,
+    description: "הקבוצה החדשה והלוהטת 🔥",
     durationLabel: morningGroup.durationLabel as string | null,
     startDateLabel: morningGroup.startDateLabel as string | null,
     sessions: morningGroup.sessions as number | null,
     priceLabel: morningGroup.priceLabel as string | null,
     paymentNote: morningGroup.paymentNote,
     capacity: morningGroup.capacity,
-    highlight: false,
+    // ההדגשה בטופס יושבת על הקבוצה החדשה — אותה קבוצה שהמייל מתאר
+    // כ"החדשה והלוהטת", כדי שהאתר והמייל לא יסמנו קבוצות שונות.
+    highlight: true,
   },
   {
     slug: "evening-monday",
     title: "קבוצת ערב",
     dayLabel: "יום שני",
     timeLabel: "19:00",
-    durationLabel: null as string | null,
+    description: "קבוצה קבועה המתקיימת מדי שבוע",
+    durationLabel: "שעה" as string | null,
+    // אין תאריך פתיחה בכוונה — קבוצה שבועית שרצה ברצף
     startDateLabel: null as string | null,
-    sessions: null as number | null,
-    priceLabel: null as string | null,
+    sessions: 8 as number | null,
+    priceLabel: "640 ₪" as string | null,
     paymentNote: morningGroup.paymentNote,
     capacity: studio.roomCapacity,
-    highlight: true,
+    highlight: false,
   },
 ] as const;
 

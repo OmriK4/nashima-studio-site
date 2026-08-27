@@ -120,6 +120,34 @@ h1, h2, h3 {
   animation: none;
 }
 
+/*
+ * "נשימה כאן" — הכפתור הצף. גל אחד יוצא מהעיגול כל 2 שניות.
+ * המשרעת קטנה בכוונה: מספיק כדי שהעין תיתפס, בלי להבהב ובלי
+ * להזיז את הכפתור ממקומו. כשהחלון פתוח אין יותר מה למשוך אליו.
+ */
+@keyframes agent-ripple {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--clay) 22%, transparent);
+  }
+  70%, 100% {
+    box-shadow: 0 0 0 14px color-mix(in srgb, var(--clay) 0%, transparent);
+  }
+}
+
+.agent-launcher::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  pointer-events: none;
+  animation: agent-ripple 2s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
+}
+
+.agent-launcher:hover::after,
+.agent-launcher:focus-visible::after {
+  animation: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;

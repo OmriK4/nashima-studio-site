@@ -1,4 +1,5 @@
 import { BreathNav } from "@/components/BreathNav";
+import { NashimaAgent } from "@/components/NashimaAgent";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { Hero } from "@/components/sections/Hero";
 import { About } from "@/components/sections/About";
@@ -38,6 +39,8 @@ export default function Home() {
       </main>
 
       <Footer />
+
+      <NashimaAgent />
     </>
   );
 }

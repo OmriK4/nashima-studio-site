@@ -99,13 +99,19 @@ export async function POST(request: Request) {
   };
 
   if (!N8N_WEBHOOK_URL) {
-    // עדיין לא חובר webhook אמיתי — מצב פיתוח בלבד.
-    // הליד לא נשמר בשום מקום; לא להסתמך על זה כהרשמה אמיתית.
-    console.warn(
-      "[register] N8N_WEBHOOK_URL אינו מוגדר — הליד לא הועבר לשום מקום:",
-      lead,
+    /**
+     * אין webhook מוגדר — הליד לא ייכתב בשום מקום.
+     * מחזירים כשל מפורש ולא "הצלחה": הסוכנת קוראת לנקודת הקצה הזו
+     * כדי לרשום אנשים, ותשובת הצלחה מזויפת הייתה גורמת לה להבטיח
+     * מקום שלא נשמר.
+     */
+    console.error(
+      "[register] N8N_WEBHOOK_URL אינו מוגדר — ההרשמה נדחתה ולא נשמרה.",
     );
-    return NextResponse.json({ ok: true, status: "confirmed" });
+    return NextResponse.json(
+      { ok: false, error: "ההרשמה אינה זמינה כרגע. אפשר לנסות שוב בהמשך." },
+      { status: 503 },
+    );
   }
 
   try {

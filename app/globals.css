@@ -1,0 +1,126 @@
+@import "tailwindcss";
+
+/*
+ * שפה חזותית: Warm Editorial Calm
+ * הפלטה נגזרה מהצילומים של הסטודיו — קרם, חול, אלון, גרייג'.
+ * האדום הרווי שמור לצילומים בלבד; פעולות משתמשות ב-clay.
+ */
+:root {
+  --cream: #f7f1e8;
+  --cream-deep: #f0e7db;
+  --milk: #fdfaf6;
+  --sand: #e6dbcb;
+  --greige: #c9bcab;
+  --taupe: #a3907c;
+  --ink: #3a332c;
+  --ink-soft: #6b6157;
+  --clay: #9d3b2f;
+  --clay-hover: #863026;
+}
+
+@theme inline {
+  --color-cream: var(--cream);
+  --color-cream-deep: var(--cream-deep);
+  --color-milk: var(--milk);
+  --color-sand: var(--sand);
+  --color-greige: var(--greige);
+  --color-taupe: var(--taupe);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-clay: var(--clay);
+  --color-clay-hover: var(--clay-hover);
+
+  --font-display: var(--font-frank), Georgia, serif;
+  --font-body: var(--font-assistant), system-ui, sans-serif;
+}
+
+/*
+ * גרעין נייר עדין מאוד — שכבת-על אחת מעל כל הדף.
+ * מקרב את הרקעים השטוחים לתחושת הנייר של הלוגו.
+ * לא נוגע במיקום של אף אלמנט, כדי לא לדרוס position של רכיבים.
+ * SVG מוטבע — בלי בקשת רשת ובלי קובץ תמונה.
+ */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.4;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+}
+
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-body);
+  /* קהל היעד 35+, קריאות במובייל היא דרישת נגישות ולא טעם */
+  font-size: 17px;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 300;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+
+:focus-visible {
+  outline: 2px solid var(--clay);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* תג "חדש בסטודיו" — פעימה עדינה כל שנייה וחצי */
+@keyframes badge-pulse {
+  0%, 62%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--clay) 40%, transparent);
+  }
+  74% {
+    transform: scale(1.06);
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--clay) 0%, transparent);
+  }
+}
+
+.badge-new {
+  animation: badge-pulse 1.5s ease-in-out infinite;
+}
+
+/*
+ * אפשרות הקבוצה המודגשת בטופס — טבעת חמה שנושמת פנימה והחוצה,
+ * כדי שהעין תיפול עליה בלי שהאפשרות תזוז ממקומה.
+ * הגבול בצבע clay נשאר גם כשהתנועה מכובה, כך שההדגשה לא הולכת לאיבוד.
+ */
+@keyframes option-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--clay) 26%, transparent);
+  }
+  55% {
+    box-shadow: 0 0 0 7px color-mix(in srgb, var(--clay) 0%, transparent);
+  }
+}
+
+.option-glow {
+  animation: option-glow 2.4s ease-in-out infinite;
+}
+
+/*
+ * ברגע שהאפשרות נבחרה אין יותר מה למשוך אליו את העין,
+ * והפעימה הופכת להסחה. הכלל יושב כאן ולא כ-utility בטופס,
+ * כי CSS ללא layer מנצח את ה-utilities של Tailwind בקסקייד.
+ */
+.option-glow:has(:checked) {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

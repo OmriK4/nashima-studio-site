@@ -177,6 +177,15 @@ export function RegisterForm() {
               />
               <span>{group.dayLabel}</span>
               <span className="text-sm text-ink-soft">{group.timeLabel}</span>
+              {/*
+                טקסט שיווקי בלבד, לא נתון אמיתי מהגיליון — דגל להחלפה
+                כשיהיה זרם הרשמות אמיתי לקבוצה הזו.
+              */}
+              {group.highlight && (
+                <span className="mt-1 text-[11px] font-medium text-clay">
+                  🔥 כבר נרשמו 4 — שריינו את המקום שלכם
+                </span>
+              )}
             </label>
           ))}
         </div>

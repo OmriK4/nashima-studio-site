@@ -82,20 +82,27 @@ export function Hero() {
           </CtaButton>
         </div>
 
-        {/* ההודעה הפעילה: הקבוצה שנפתחת עכשיו */}
+        {/*
+          ההודעה הפעילה: הקבוצה שנפתחת עכשיו.
+          הרקע שקוף חלקית עם טשטוש (לא bg-milk אטום), כדי שהכרטיס יתמזג
+          עם הסרטון מאחוריו במקום לשבת עליו כריבוע לבן בולט. המלל מפצה
+          על השקיפות במשקל וצל טקסט עדין, כך שהקריאות לא נפגעת.
+        */}
         <a
           href="#group"
-          className="mt-10 flex flex-col items-center gap-1 rounded-xl border border-clay/25 bg-milk px-6 py-5 transition-colors hover:border-clay/50"
+          className="mt-10 flex flex-col items-center gap-1 rounded-xl border border-clay/30 bg-milk/40 px-6 py-5 backdrop-blur-sm transition-colors hover:border-clay/55 hover:bg-milk/55"
         >
-          <span className="text-xs tracking-[0.18em] text-clay">
+          <span className="text-xs font-semibold tracking-[0.18em] text-clay drop-shadow-[0_1px_2px_rgba(255,255,255,0.5)]">
             נפתחת עכשיו
           </span>
-          <span className="mt-1 text-xl">{morningGroup.title}</span>
-          <span className="text-ink-soft">
+          <span className="mt-1 text-xl font-semibold text-ink drop-shadow-[0_1px_3px_rgba(255,255,255,0.6)]">
+            {morningGroup.title}
+          </span>
+          <span className="font-medium text-ink-soft drop-shadow-[0_1px_2px_rgba(255,255,255,0.5)]">
             {morningGroup.dayLabel}, {morningGroup.timeLabel} · מתחילים ב־
             {morningGroup.startDateLabel}
           </span>
-          <span className="mt-2 text-sm text-clay underline underline-offset-4">
+          <span className="mt-2 text-sm font-semibold text-clay underline underline-offset-4">
             לפרטים ולשמירת מקום
           </span>
         </a>

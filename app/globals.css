@@ -73,20 +73,24 @@ h1, h2, h3 {
   border-radius: 4px;
 }
 
-/* תג "חדש בסטודיו" — פעימה עדינה כל שנייה וחצי */
+/*
+ * תג "חדש בסטודיו" — פעימה עדינה, פעם אחת כל 3 שניות.
+ * משרעת קטנה (סקייל וטבעת-צל צנועים) כדי שהתשומת לב תיפול על
+ * המלל ולא על התנועה עצמה.
+ */
 @keyframes badge-pulse {
-  0%, 62%, 100% {
+  0%, 80%, 100% {
     transform: scale(1);
-    box-shadow: 0 0 0 0 color-mix(in srgb, var(--clay) 40%, transparent);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--clay) 30%, transparent);
   }
-  74% {
-    transform: scale(1.06);
-    box-shadow: 0 0 0 6px color-mix(in srgb, var(--clay) 0%, transparent);
+  90% {
+    transform: scale(1.03);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--clay) 0%, transparent);
   }
 }
 
 .badge-new {
-  animation: badge-pulse 1.5s ease-in-out infinite;
+  animation: badge-pulse 3s ease-in-out infinite;
 }
 
 /*
@@ -104,7 +108,7 @@ h1, h2, h3 {
 }
 
 .option-glow {
-  animation: option-glow 2.4s ease-in-out infinite;
+  animation: option-glow 3s ease-in-out infinite;
 }
 
 /*

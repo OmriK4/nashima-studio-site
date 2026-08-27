@@ -57,8 +57,6 @@ export const registrationSchema = z.object({
   startedAt: z.number(),
 });
 
-export type RegistrationPayload = z.infer<typeof registrationSchema>;
-
 /**
  * סכמת הטופס בפועל: הטלפון מפוצל לקידומת + 7 ספרות חופשיות,
  * ל-UX נוח יותר במובייל. מורכב מחדש למחרוזת אחת לפני שליחה לשרת.

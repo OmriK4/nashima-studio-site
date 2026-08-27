@@ -6,6 +6,53 @@ import { findRegistrationGroup, studio, practicalInfo, contact } from "@/content
 // שליחה מהירה מזה נחשבת חשודה — בן אדם לא ממלא טופס תוך פחות משנייה
 const MIN_FILL_TIME_MS = 1200;
 
+// כל הרשמה שעוברת כאן כותבת שורה בגיליון ושולחת שני מיילים אמיתיים.
+// לכן יש תקרה לכמה פעמים אותה כתובת IP יכולה להצליח בחלון זמן.
+const RATE_WINDOW_MS = 10 * 60 * 1000;
+const RATE_MAX = 5;
+
+/**
+ * מונה בזיכרון התהליך. ב-Vercel כל instance סופר לעצמו והמונה מתאפס
+ * בהתעוררות קרה, ולכן זו האטה של התפרצות ולא מכסה קשיחה. עבור עסק
+ * בהיקף הזה זה מספיק, ואין צורך להכניס Redis רק בשביל טופס אחד.
+ */
+const hits = new Map<string, number[]>();
+
+function rateLimited(key: string) {
+  const now = Date.now();
+  const recent = (hits.get(key) ?? []).filter((t) => now - t < RATE_WINDOW_MS);
+  if (recent.length >= RATE_MAX) {
+    hits.set(key, recent);
+    return true;
+  }
+  recent.push(now);
+  hits.set(key, recent);
+
+  // ניקוי מפתחות ישנים, כדי שהמפה לא תגדל בלי גבול לאורך חיי ה-instance
+  if (hits.size > 500) {
+    for (const [k, v] of hits) {
+      if (v.every((t) => now - t >= RATE_WINDOW_MS)) hits.delete(k);
+    }
+  }
+  return false;
+}
+
+/**
+ * הטופס באתר הוא הצרכן היחיד של נקודת הקצה הזו, והדפדפן תמיד שולח
+ * Origin ב-POST. דרישה שה-Origin יתאים ל-Host חוסמת סקריפטים חיצוניים
+ * וטפסים באתרים אחרים, בלי לקבע דומיין בקוד.
+ */
+function sameOrigin(request: Request) {
+  const origin = request.headers.get("origin");
+  const host = request.headers.get("host");
+  if (!origin || !host) return false;
+  try {
+    return new URL(origin).host === host;
+  } catch {
+    return false;
+  }
+}
+
 /**
  * המקום היחיד שמכיר את כתובת ה-webhook של n8n והסוד המשותף איתו.
  * נשארים צד-שרת בלבד ולא מגיעים ללקוח, כדי שאף אחד לא יוכל
@@ -18,6 +65,22 @@ const N8N_WEBHOOK_URL = process.env.N8N_WEBHOOK_URL;
 const N8N_WEBHOOK_SECRET = process.env.N8N_WEBHOOK_SECRET;
 
 export async function POST(request: Request) {
+  if (!sameOrigin(request)) {
+    return NextResponse.json(
+      { ok: false, error: "בקשה לא תקינה." },
+      { status: 403 },
+    );
+  }
+
+  const ip =
+    request.headers.get("x-forwarded-for")?.split(",")[0].trim() || "unknown";
+  if (rateLimited(ip)) {
+    return NextResponse.json(
+      { ok: false, error: "נשלחו יותר מדי בקשות. אפשר לנסות שוב בעוד כמה דקות." },
+      { status: 429 },
+    );
+  }
+
   let body: unknown;
   try {
     body = await request.json();

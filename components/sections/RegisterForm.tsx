@@ -337,13 +337,17 @@ export function RegisterForm() {
         </p>
       )}
 
-      <button
-        type="submit"
-        disabled={status === "submitting" || isSubmitting}
-        className="inline-flex w-full items-center justify-center rounded-full bg-clay px-7 py-3.5 text-base text-cream transition-colors hover:bg-clay-hover disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
-      >
-        {status === "submitting" || isSubmitting ? "שולח..." : "שמירת מקום בקבוצה"}
-      </button>
+      {/* הכפתור ממורכז מתחת לטופס — בדסקטופ הוא ברוחב תוכן, ולכן
+          העטיפה היא זו שמרכזת אותו ולא מרג׳ין על אלמנט inline-flex. */}
+      <div className="flex justify-center">
+        <button
+          type="submit"
+          disabled={status === "submitting" || isSubmitting}
+          className="inline-flex w-full items-center justify-center rounded-full bg-clay px-7 py-3.5 text-base text-cream transition-colors hover:bg-clay-hover disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
+        >
+          {status === "submitting" || isSubmitting ? "שולח..." : "שריין לי מקום"}
+        </button>
+      </div>
     </form>
   );
 }

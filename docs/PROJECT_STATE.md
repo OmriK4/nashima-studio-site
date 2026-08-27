@@ -67,9 +67,12 @@ n8n + Google Sheets הם שכבת האוטומציה וההתמדה. אין Supa
   ונגזר מאותם שדות גם בכתיבה וגם בספירה כדי ששתיהן יסכימו.
   הטלפון נשמר עם `cellFormat: RAW` כדי ש-Google Sheets לא יהפוך אותו
   למספר וישמיט את ה-+.
-- **המייל ללקוחה הוא HTML ממותג** (RTL, 600px, צבעי `globals.css`,
+- **שני המיילים הם HTML ממותג** (RTL, 600px, צבעי `globals.css`,
   הלוגו מ-`https://nashima-studio-site.vercel.app/images/logo-nashima-mark.png`).
-  נבנה ב-Compute Status ונשלח ע"י Email Customer כ-`emailType: html`.
+  שניהם נבנים ב-Compute Status דרך אותו `shell()` ואותם helpers, ונשלחים
+  כ-`emailType: html` — `emailHtml` ללקוחה, `ownerHtml` לבעלת הסטודיו.
+  כל המלל ממורכז, ולכן קו הדגש של הכרטיסים עבר מהצד לחלק העליון.
+  גרסאות הטקסט הישנות (`emailBody`, `ownerBody`) הוסרו — איש לא צרך אותן.
   ⚠️ כתובת הלוגו תלויה בכך שהאתר ב-Vercel נשאר חי ופומבי.
 - **⚠️ זמני, לתשומת לב לפני production:** גם המייל השולח וגם התראת
   הבעלים משתמשים כרגע ב-Gmail האישי של עומרי (omribusiness4@gmail.com),
@@ -85,6 +88,60 @@ n8n + Google Sheets הם שכבת האוטומציה וההתמדה. אין Supa
 - ⚠️ ה-workflow הזמני "TEMP - Fix Nashima Sheet Header" מנקה את הגיליון.
   `keepFirstRow` שלו יושב עכשיו ברמה הנכונה של הפרמטרים ושומר על
   שורת הכותרות; קודם הוא היה מקונן בטעות ומחק אותה יחד עם הנתונים.
+
+## הסוכנת "נשימה כאן"
+- **Workflow:** "נשימה כאן — סוכנת האתר" (`Anm4GYL3vhIrrOBq`), פעיל.
+  Chat Trigger בסטרימינג ⇠ Normalize And Guard ⇠ Agent (Claude Sonnet 5
+  דרך OpenRouter) עם זיכרון של 24 הודעות לפי sessionId מהדפדפן.
+- **Workflow:** "נשימה — מנוע הרשמה" (`Xaugiepz92jsbdbI`), פעיל.
+  שתי פעולות: `checkAvailability` (קורא בלבד) ו-`register`, שקורא
+  ל-workflow ההרשמות דרך `Agent Entry` — בלי HTTP ובלי סוד.
+- הווידג'ט: `components/NashimaAgent.tsx`. `[[REGISTERED]]` הוא מקור
+  האמת היחיד להצלחה; טקסט מהמודל נכנס כ-children של React ולעולם לא כ-HTML.
+- הכפתור הצף משתמש ב-`logo-nashima-glyph.png` — הסימן בלי המילה "נשימה",
+  שנחתך מ-`logo-nashima-mark.png` כי בגודל של עיגול המילה לא נקראת.
+
+## אבטחה — מה נאכף בפועל
+- **כותרות אבטחה** ב-`next.config.ts` על כל תשובה: `frame-ancestors 'none'`
+  + `X-Frame-Options: DENY` (הגנה מ-clickjacking על טופס ההרשמה),
+  `nosniff`, `Referrer-Policy`, `Permissions-Policy`.
+  אין CSP מלא בכוונה — Next מזריק סקריפטים inline להידרציה, ו-CSP אמיתי
+  היה דורש nonce לכל בקשה.
+- **`/api/register`:** דורש `Origin` שתואם ל-`Host` (חוסם curl וטפסים
+  באתרים אחרים; נבדק — דפדפן מקבל 400 על גוף שגוי, לא 403), ומגביל
+  5 שליחות מוצלחות לכל IP ב-10 דקות. המונה בזיכרון ה-instance, ולכן
+  ב-Vercel זו האטת התפרצות ולא מכסה קשיחה.
+- **⚠️ ה-Chat Trigger של הסוכנת פתוח לאינטרנט.** הכתובת שלו יושבת ב-JS
+  של הדף, ו-`allowedOrigins` הוא כותרת CORS בלבד שאינה חוסמת קריאה
+  ישירה. החסימה האמיתית היא הגבלת הקצב ב-Normalize And Guard:
+  30 הודעות ל-session בחצי שעה, 200 בסך הכול ב-10 דקות, ושתיהן עוצרות
+  **לפני** הקריאה למודל — כך שהצפה לא עולה כסף. נבדק בפועל:
+  שלוש הודעות ברצף החזירו `rateCount` 1,2,3, כלומר המונה נשמר בין הרצות.
+- **תקרת הרשמות במנוע:** 3 לאותו sessionId בשעה, 30 בסך הכול בשעה.
+  הפרומפט דורש אישור מפורש לפני הרשמה, אבל פרומפט אינו אמצעי אבטחה —
+  שיחה שהצליחה לשכנע את המודל להתעלם מהכללים נעצרת בשכבה הזו.
+- **`callerPolicy` נעול:** ברירת המחדל של n8n אפשרה לכל workflow באותו
+  חשבון להריץ את `Agent Entry` ולכתוב הרשמות. עכשיו workflow ההרשמות
+  מקבל קריאות מהמנוע בלבד, והמנוע מהסוכנת בלבד.
+- **`Run Registration` עם `onError: continueRegularOutput`** — כשל בהרשמה
+  מחזיר `registration_failed` לסוכנת במקום להפיל את הכלי, והסוכנת אומרת
+  בכנות שלא נשמר מקום.
+- **`/api/register` בלי `N8N_WEBHOOK_URL` מחזיר 503**, לא "הצלחה" מדומה.
+
+## חובות אבטחה שנשארו פתוחות
+- ⚠️ הסוד המשותף כתוב בטקסט גלוי בתוך שני nodes ב-workflow ההרשמות
+  (`onlyRunIf` ו-`Check Secret`). כל מי שיש לו גישת קריאה ל-n8n רואה אותו.
+  להעביר ל-Variable של n8n (`$vars`) ולסובב אותו יחד עם משתנה הסביבה.
+- ⚠️ שלושה workflows זמניים לא נמחקו: `TEMP - Fix Nashima Sheet Header`
+  (`uCPJMVTPsPyz5iF3`) שמנקה את הגיליון, `TEMP - Check Nashima Sheet`
+  (`kufjBZ8nHPQ2ZHEx`) ו-`TEMP - Nashima Studio Leads Sheet Setup`
+  (`4EA2H3WyzcZ3BznT`). כולם מכובים וללא טריגר, ולכן לא ירוצו מעצמם —
+  אבל הראשון הרסני אם מריצים אותו ידנית. למחוק ידנית ב-n8n.
+- ⚠️ `availableInMCP: true` על שלושת ה-workflows — לקוח MCP מחובר יכול
+  להריץ אותם. נשאר דלוק בכוונה כדי לא לחסום כלי עבודה, אבל כדאי לכבות
+  על workflow ההרשמות לפני שהאתר משרת לקוחות אמיתיים.
+- `/api/groups` פתוח לקריאה. אין בו סוד ואין בו מידע על נרשמות — רק
+  מה שממילא מופיע בדף. תקין כפי שהוא.
 
 ## פתוח / חוסם
 - פרטי קשר הם placeholder (`contact.isPlaceholder = true`). חובה להחליף לפני עלייה לאוויר.
@@ -103,4 +160,5 @@ n8n + Google Sheets הם שכבת האוטומציה וההתמדה. אין Supa
       פעיל ונבדק ב-HTTP אמיתי מקצה לקצה מהטופס באתר
 - [x] 3 — מיילים ללקוח ולבעלת העסק (בתוך אותו n8n workflow)
 - [ ] 3.5 — יומן Google Calendar (טרם מומש)
+- [x] 3.8 — סוכנת "נשימה כאן" בדף הנחיתה, מחוברת להרשמה אמיתית
 - [ ] 4 — נגישות, ביצועים, SEO, production

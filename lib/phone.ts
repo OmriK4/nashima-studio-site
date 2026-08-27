@@ -11,8 +11,6 @@ export const ISRAELI_MOBILE_PREFIXES = [
   "058",
 ] as const;
 
-export type IsraeliMobilePrefix = (typeof ISRAELI_MOBILE_PREFIXES)[number];
-
 /**
  * נרמול מספר מקומי (למשל "0501234567") ל-E.164 (+972501234567).
  * גם קלט חופשי עם רווחים/מקפים/972+ מתקבל, למקרה שמגיע ממקור אחר מהטופס.
@@ -31,10 +29,4 @@ export function normalizeIsraeliMobile(raw: string): string | null {
   }
 
   return `+972${digits}`;
-}
-
-/** תצוגה נוחה לקריאה: 050-123-4567 */
-export function formatIsraeliMobile(e164: string): string {
-  const local = e164.replace("+972", "0");
-  return `${local.slice(0, 3)}-${local.slice(3, 6)}-${local.slice(6)}`;
 }

@@ -1,6 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import Image from "next/image";
+
+import { images } from "@/content/images";
 
 /**
  * "נשימה כאן" — העוזרת הדיגיטלית של הסטודיו.
@@ -245,22 +248,23 @@ export function NashimaAgent() {
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-label={open ? "סגירת הצ׳אט" : "פתיחת הצ׳אט עם העוזרת הדיגיטלית"}
-        className={`agent-launcher fixed bottom-5 left-5 z-50 flex h-14 w-14 items-center justify-center rounded-full border border-clay/30 bg-milk text-clay shadow-[0_10px_28px_-12px_rgba(58,51,44,0.45)] transition-[transform,box-shadow,opacity] duration-300 hover:-translate-y-0.5 hover:border-clay/60 sm:h-16 sm:w-16 ${
+        className={`agent-launcher fixed bottom-5 left-5 z-50 flex h-[4.25rem] w-[4.25rem] items-center justify-center rounded-full border border-clay/30 bg-milk shadow-[0_10px_28px_-12px_rgba(58,51,44,0.45)] transition-[transform,box-shadow,opacity] duration-300 hover:-translate-y-0.5 hover:border-clay/60 sm:h-20 sm:w-20 ${
           open ? "pointer-events-none scale-90 opacity-0" : "opacity-100"
         }`}
       >
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.6"
-          strokeLinecap="round"
-          strokeLinejoin="round"
+        {/*
+          סימן הלוגו בלבד, בלי המילה "נשימה" — הכפתור עגול והמילה
+          לא הייתה נקראת בגודל הזה. הקו של הסימן בהיר מאוד בקובץ,
+          ולכן brightness מכהה אותו כדי שייקרא על רקע החלב.
+        */}
+        <Image
+          src={images.logoGlyph.src}
+          alt=""
           aria-hidden
-          className="h-6 w-6 sm:h-7 sm:w-7"
-        >
-          <path d="M21 11.5a8.4 8.4 0 0 1-8.5 8.4 8.9 8.9 0 0 1-3.9-.9L3 21l1.9-5.4A8.4 8.4 0 0 1 12.5 3 8.4 8.4 0 0 1 21 11.5z" />
-        </svg>
+          width={images.logoGlyph.width}
+          height={images.logoGlyph.height}
+          className="h-8 w-auto brightness-[0.62] sm:h-9"
+        />
       </button>
 
       {open && (
@@ -274,9 +278,13 @@ export function NashimaAgent() {
               aria-hidden
               className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-cream-deep text-clay"
             >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" className="h-4 w-4">
-                <path d="M21 11.5a8.4 8.4 0 0 1-8.5 8.4 8.9 8.9 0 0 1-3.9-.9L3 21l1.9-5.4A8.4 8.4 0 0 1 12.5 3 8.4 8.4 0 0 1 21 11.5z" />
-              </svg>
+              <Image
+                src={images.logoGlyph.src}
+                alt=""
+                width={images.logoGlyph.width}
+                height={images.logoGlyph.height}
+                className="h-4 w-auto brightness-[0.62]"
+              />
             </span>
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
@@ -285,7 +293,6 @@ export function NashimaAgent() {
                   עוזרת דיגיטלית
                 </span>
               </div>
-              <p className="truncate text-xs text-taupe">לא נטע — עוזרת שעונה על שאלות</p>
             </div>
             <button
               type="button"

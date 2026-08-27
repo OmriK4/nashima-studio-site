@@ -11,6 +11,16 @@ export const images = {
     width: 631,
     height: 605,
   },
+  /**
+   * הסימן בלבד, בלי המילה "נשימה" שמתחתיו — נחתך מ-logo-nashima-mark.
+   * לשימוש במקומות עגולים וקטנים שבהם המילה לא הייתה נקראת בכל מקרה.
+   */
+  logoGlyph: {
+    src: "/images/logo-nashima-glyph.png",
+    alt: "סטודיו נשימה",
+    width: 584,
+    height: 411,
+  },
   logoOriginal: {
     src: "/images/logo-nashima.png",
     alt: "סטודיו נשימה",

@@ -41,8 +41,12 @@ export const morningGroup = {
   paymentNote: "התשלום מתבצע בסטודיו",
 } as const;
 
+/**
+ * רק מה שאין לו הרשמה דרך האתר. קבוצת הערב לא כאן — יש לה הרשמה
+ * דרך הטופס, והיום/השעה שלה מגיעים מ-registrationGroups בלבד,
+ * כדי שלא יהיו שני מקורות אמת לאותו פרט.
+ */
 export const otherOfferings = [
-  { title: "קבוצת ערב", detail: "ימי שני, 19:00" },
   { title: "אימונים אישיים", detail: "בתיאום מראש" },
 ] as const;
 
@@ -61,11 +65,9 @@ export const practicalInfo = {
  *
  * רביעי נגזר מ-morningGroup כדי לא לשכפל אותו.
  *
- * ⚠️ לקבוצת הערב אין תאריך פתיחה — היא קבוצה שבועית מתמשכת.
- * שדה null פשוט לא מוצג, ולא ממציאים לו ערך.
- *
- * ⚠️ קבוצת הערב מתוארת גם ב-otherOfferings כטקסט חופשי.
- * שווה לאחד את שני המקומות בהמשך.
+ * לקבוצת הערב אין תאריך פתיחה בכוונה — היא כבר רצה ברצף שבועי,
+ * לא קבוצה עתידית עם תאריך התחלה. שדה null פשוט לא מוצג.
+ * המחיר זהה לרביעי (640 ₪, נמכר בחבילות של 8 מפגשים) — אושר מול נטע.
  */
 export const registrationGroups = [
   {
@@ -107,6 +109,9 @@ export type RegistrationGroupSlug =
 export function findRegistrationGroup(slug: string) {
   return registrationGroups.find((g) => g.slug === slug) ?? null;
 }
+
+/** לתצוגה מחוץ לטופס (כמו רשימת השיעורים) — אותו מקור, בלי לשכפל. */
+export const eveningGroup = registrationGroups[1];
 
 /** מגבלת קיבולת קשיחה. מקור האמת בזמן ריצה הוא מסד הנתונים. */
 export const CAPACITY = morningGroup.capacity;

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { morningGroup, otherOfferings, contact } from "@/content/site";
+import { morningGroup, eveningGroup, otherOfferings, contact } from "@/content/site";
 import { images } from "@/content/images";
 import { Section } from "@/components/ui";
 
@@ -29,6 +29,13 @@ export function Classes() {
               נפתחת ב־{morningGroup.startDateLabel}
             </a>
           </p>
+        </li>
+
+        <li className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 py-6">
+          <span className="text-xl">{eveningGroup.title}</span>
+          <span className="text-ink-soft">
+            {eveningGroup.dayLabel}, {eveningGroup.timeLabel}
+          </span>
         </li>
 
         {otherOfferings.map((item) => (

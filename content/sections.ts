@@ -8,5 +8,3 @@ export const sections = [
   { id: "place", label: "המקום" },
   { id: "faq", label: "שאלות" },
 ] as const;
-
-export type SectionId = (typeof sections)[number]["id"];

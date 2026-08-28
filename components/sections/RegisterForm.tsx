@@ -16,7 +16,17 @@ import {
   contact,
 } from "@/content/site";
 
-type Status = "idle" | "submitting" | "success" | "error";
+type Status = "idle" | "submitting" | "success" | "error" | "unsure";
+
+/** מה n8n החזיר על המקום שנשמר. "unknown" = נכתב, אך הסטטוס לא הוחזר. */
+type SeatStatus = "confirmed" | "waitlist" | "unknown";
+
+/**
+ * ארוך מהתקרה של השרת (25 שניות ל-n8n בתוך maxDuration של 30), כדי
+ * שהתשובה המסודרת של השרת תגיע ראשונה כמעט תמיד. ניתוק יזום מוקדם
+ * יותר היה מייצר ספק מיותר אצל מי שההרשמה שלה כן נקלטה.
+ */
+const SUBMIT_TIMEOUT_MS = 35000;
 
 // בלי w-full כאן בכוונה: השדה הכפול (טלפון) צריך רוחב חלקי,
 // וקלאס w-full שהיה כאן ניצח w-24/flex-1 לפי סדר הפלט הפנימי של Tailwind.
@@ -30,6 +40,8 @@ export function RegisterForm() {
   const [status, setStatus] = useState<Status>("idle");
   // איזו קבוצה נשלחה בפועל — מסך האישור מציג את הפרטים שלה ולא של אחרת
   const [sentGroupSlug, setSentGroupSlug] = useState<string | null>(null);
+  // מקום מאושר או רשימת המתנה — כדי שהמסך לא יבטיח מקום שלא נשמר
+  const [seatStatus, setSeatStatus] = useState<SeatStatus>("unknown");
   // useState עם אתחול עצל: Date.now() נקרא פעם אחת בלבד, לא בכל רינדור
   const [startedAt] = useState(() => Date.now());
 
@@ -79,12 +91,24 @@ export function RegisterForm() {
             honeypot: values.honeypot,
             startedAt: values.startedAt,
           }),
+          signal: AbortSignal.timeout(SUBMIT_TIMEOUT_MS),
         });
-        const data: { ok: boolean } = await res.json();
-        if (data.ok) setSentGroupSlug(values.group);
-        setStatus(data.ok ? "success" : "error");
-      } catch {
+        const data: { ok: boolean; status?: SeatStatus } = await res.json();
+        if (data.ok) {
+          setSentGroupSlug(values.group);
+          setSeatStatus(data.status ?? "unknown");
+          setStatus("success");
+          return;
+        }
         setStatus("error");
+      } catch {
+        /**
+         * ניתוק או תום זמן — אין לנו דרך לדעת אם ההרשמה נכתבה או לא,
+         * ואין מנגנון שמונע שורה כפולה בשליחה חוזרת. לכן מציגים מסך
+         * נפרד שמבקש לבדוק את המייל לפני ניסיון נוסף, במקום להציע
+         * "נסו שוב" שעלול לרשום את אותה אדם פעמיים.
+         */
+        setStatus("unsure");
       }
     },
     () => {
@@ -106,10 +130,29 @@ export function RegisterForm() {
   const sentGroup = sentGroupSlug ? findRegistrationGroup(sentGroupSlug) : null;
 
   if (status === "success" && sentGroup) {
+    /**
+     * רק סטטוס "waitlist" מוכר משנה את הכותרת. כל מצב אחר, כולל
+     * "unknown", מציג את האישור הרגיל — אותה התנהגות שהייתה קודם.
+     * העיקר הוא שמי שנכנסה לרשימת המתנה לא תקרא "מחכים לך ביום רביעי".
+     */
+    const waitlisted = seatStatus === "waitlist";
+
     return (
       <div className="rounded-xl border border-sand bg-milk p-6 sm:p-8">
-        <p className="text-sm tracking-[0.14em] text-clay">ההרשמה נקלטה</p>
-        <h3 className="mt-2 text-2xl">מחכים לך ב{sentGroup.dayLabel}</h3>
+        <p className="text-sm tracking-[0.14em] text-clay">
+          {waitlisted ? "נרשמת לרשימת ההמתנה" : "ההרשמה נקלטה"}
+        </p>
+        <h3 className="mt-2 text-2xl">
+          {waitlisted
+            ? "הקבוצה מלאה כרגע"
+            : `מחכים לך ב${sentGroup.dayLabel}`}
+        </h3>
+
+        {waitlisted && (
+          <p className="mt-3 text-ink-soft">
+            שמרנו את מקומך ברשימת ההמתנה, ואם יתפנה מקום ניצור קשר בהקדם.
+          </p>
+        )}
 
         {/* שורה שאין לה נתון פשוט לא מוצגת — עדיף חסר על פני המצאה */}
         <dl className="mt-6 space-y-2 text-ink-soft">
@@ -134,6 +177,26 @@ export function RegisterForm() {
 
         <p className="mt-6 text-sm text-taupe">
           שאלה לפני המפגש? אפשר להתקשר: {contact.phone}
+        </p>
+      </div>
+    );
+  }
+
+  /**
+   * החיבור נקטע ואיננו יודעים אם ההרשמה נכתבה. לא מציעים "נסו שוב"
+   * כברירת מחדל, כי שליחה חוזרת עלולה ליצור הרשמה כפולה.
+   */
+  if (status === "unsure") {
+    return (
+      <div className="rounded-xl border border-clay/30 bg-milk p-6 sm:p-8">
+        <p className="text-sm tracking-[0.14em] text-clay">החיבור נקטע</p>
+        <h3 className="mt-2 text-2xl">לא הצלחנו לוודא את ההרשמה</h3>
+        <p className="mt-4 text-ink-soft">
+          ייתכן שההרשמה כן נקלטה. כדאי לבדוק אם הגיע מייל אישור לפני
+          שממלאים את הטופס שוב, כדי שלא תיווצר הרשמה כפולה.
+        </p>
+        <p className="mt-6 text-sm text-taupe">
+          אם לא הגיע מייל, אפשר להתקשר: {contact.phone}
         </p>
       </div>
     );

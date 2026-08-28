@@ -38,7 +38,7 @@ export const registrationSchema = z.object({
     .string()
     .trim()
     .min(1, "יש להזין כתובת אימייל")
-    .email("כתובת אימייל לא תקינה"),
+    .pipe(z.email("כתובת אימייל לא תקינה")),
 
   firstTime: z.enum(["yes", "no"], {
     message: "יש לבחור תשובה",

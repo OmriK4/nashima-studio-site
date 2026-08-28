@@ -35,7 +35,9 @@ export const morningGroup = {
   startDateLabel: "14 באוקטובר 2026",
   endDateLabel: "2 בדצמבר 2026",
   sessions: 8,
-  capacity: 8,
+  // גודל הקבוצה הוא גודל החדר — מקור אחד, כדי ששינוי של אחד לא ישאיר
+  // את השני מאחור ויסתור את מה שכתוב בדף.
+  capacity: studio.roomCapacity,
   price: 640,
   priceLabel: "640 ₪",
   paymentNote: "התשלום מתבצע בסטודיו",
@@ -95,8 +97,10 @@ export const registrationGroups = [
     durationLabel: "שעה" as string | null,
     // אין תאריך פתיחה בכוונה — קבוצה שבועית שרצה ברצף
     startDateLabel: null as string | null,
-    sessions: 8 as number | null,
-    priceLabel: "640 ₪" as string | null,
+    // אותה חבילה בדיוק כמו רביעי — נגזר ולא משוכפל, כדי ששינוי מחיר
+    // ייעשה במקום אחד. אם התמחור של הקבוצות ייפרד בעתיד, כאן מפרידים.
+    sessions: morningGroup.sessions as number | null,
+    priceLabel: morningGroup.priceLabel as string | null,
     paymentNote: morningGroup.paymentNote,
     capacity: studio.roomCapacity,
     highlight: false,

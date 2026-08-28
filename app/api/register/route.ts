@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { registrationSchema } from "@/lib/schema";
 import { normalizeIsraeliMobile } from "@/lib/phone";
-import { sameOrigin } from "@/lib/http";
+import { sameOrigin, clientKey, createRateLimiter } from "@/lib/http";
 import { findRegistrationGroup, studio, practicalInfo, contact } from "@/content/site";
 
 // ה-workflow קורא Sheet, כותב שורה ושולח שני מיילים לפני שהוא עונה —
@@ -10,39 +10,15 @@ import { findRegistrationGroup, studio, practicalInfo, contact } from "@/content
 // אמיתי לפני שהדפדפן מוותר ומציג "תקלה זמנית" על הרשמה שבפועל הצליחה.
 export const maxDuration = 30;
 
-// שליחה מהירה מזה נחשבת חשודה — בן אדם לא ממלא טופס תוך פחות משנייה
+// מילוי מהיר מזה חשוד, אבל אינו ראיה. ראו את ההערה ב-POST.
 const MIN_FILL_TIME_MS = 1200;
 
 // כל הרשמה שעוברת כאן כותבת שורה בגיליון ושולחת שני מיילים אמיתיים.
 // לכן יש תקרה לכמה פעמים אותה כתובת IP יכולה להצליח בחלון זמן.
-const RATE_WINDOW_MS = 10 * 60 * 1000;
-const RATE_MAX = 5;
-
-/**
- * מונה בזיכרון התהליך. ב-Vercel כל instance סופר לעצמו והמונה מתאפס
- * בהתעוררות קרה, ולכן זו האטה של התפרצות ולא מכסה קשיחה. עבור עסק
- * בהיקף הזה זה מספיק, ואין צורך להכניס Redis רק בשביל טופס אחד.
- */
-const hits = new Map<string, number[]>();
-
-function rateLimited(key: string) {
-  const now = Date.now();
-  const recent = (hits.get(key) ?? []).filter((t) => now - t < RATE_WINDOW_MS);
-  if (recent.length >= RATE_MAX) {
-    hits.set(key, recent);
-    return true;
-  }
-  recent.push(now);
-  hits.set(key, recent);
-
-  // ניקוי מפתחות ישנים, כדי שהמפה לא תגדל בלי גבול לאורך חיי ה-instance
-  if (hits.size > 500) {
-    for (const [k, v] of hits) {
-      if (v.every((t) => now - t >= RATE_WINDOW_MS)) hits.delete(k);
-    }
-  }
-  return false;
-}
+const isRateLimited = createRateLimiter({
+  windowMs: 10 * 60 * 1000,
+  max: 5,
+});
 
 /**
  * המקום היחיד שמכיר את כתובת ה-webhook של n8n והסוד המשותף איתו.
@@ -63,9 +39,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const ip =
-    request.headers.get("x-forwarded-for")?.split(",")[0].trim() || "unknown";
-  if (rateLimited(ip)) {
+  if (isRateLimited(clientKey(request))) {
     return NextResponse.json(
       { ok: false, error: "נשלחו יותר מדי בקשות. אפשר לנסות שוב בעוד כמה דקות." },
       { status: 429 },
@@ -92,10 +66,28 @@ export async function POST(request: Request) {
 
   const { honeypot, startedAt } = parsed.data;
 
-  // בוט: שדה המלכודת מולא, או שהטופס "נשלח" מהר מדי מכדי שאדם מילא אותו
-  if (honeypot || Date.now() - startedAt < MIN_FILL_TIME_MS) {
-    // תשובת הצלחה מזויפת — לא חושפים לבוט שזוהה
+  /**
+   * מלכודת הבוטים היא הסימן היחיד שמצדיק השלכת פנייה: השדה מוסתר
+   * מבני אדם, ולכן אדם לעולם לא ממלא אותו. תשובת ההצלחה מזויפת בכוונה,
+   * כדי לא לחשוף לבוט שזוהה.
+   */
+  if (honeypot) {
     return NextResponse.json({ ok: true, status: "confirmed" });
+  }
+
+  /**
+   * מהירות המילוי נמדדת מול startedAt שמגיע מהשעון של הדפדפן, ולכן
+   * היא **לא** ראיה: שעון לקוח שמקדים את השרת מקצר את ההפרש, ומילוי
+   * אוטומטי לגיטימי יכול לרדת מתחת לסף. קודם לכן מקרה כזה קיבל את
+   * אותה תשובת הצלחה מזויפת — כלומר לקוחה אמיתית ראתה "ההרשמה נקלטה"
+   * בזמן ששום שורה לא נכתבה ושום מייל לא נשלח.
+   * לכן הסף נשאר כסימן לתיעוד בלבד, וההרשמה ממשיכה כרגיל.
+   */
+  const elapsed = Date.now() - startedAt;
+  if (elapsed < MIN_FILL_TIME_MS) {
+    console.warn(
+      `[register] טופס נשלח מהר מהצפוי (${elapsed}ms) — ממשיכים בכל זאת כדי לא לאבד ליד אמיתי.`,
+    );
   }
 
   const phoneE164 = normalizeIsraeliMobile(parsed.data.phone);
@@ -185,11 +177,19 @@ export async function POST(request: Request) {
       throw new Error(`n8n responded with ${n8nRes.status}`);
     }
 
-    const data = (await n8nRes.json()) as { status?: "confirmed" | "waitlist" };
-    return NextResponse.json({
-      ok: true,
-      status: data.status ?? "confirmed",
-    });
+    /**
+     * מעבירים רק סטטוס שהוכר במפורש. קודם לכן ערך חסר תורגם ל-"confirmed",
+     * כלומר מי שנכנסה לרשימת המתנה הייתה עלולה לקבל אישור מקום.
+     * "unknown" אומר שהשורה נכתבה אבל הסטטוס לא ידוע לנו — והמסך
+     * מציג במקרה כזה את האישור הנייטרלי, בלי להבטיח מקום שלא אושר.
+     */
+    const data = (await n8nRes.json()) as { status?: unknown };
+    const status =
+      data.status === "confirmed" || data.status === "waitlist"
+        ? data.status
+        : "unknown";
+
+    return NextResponse.json({ ok: true, status });
   } catch (err) {
     console.error("[register] כשל בהעברת הליד ל-n8n:", err);
     return NextResponse.json(

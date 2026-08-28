@@ -83,7 +83,6 @@ export function NashimaAgent() {
   ]);
 
   const logRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLTextAreaElement>(null);
   const abortRef = useRef<AbortController | null>(null);
   const epochRef = useRef(0);
   const nextId = useRef(1);
@@ -363,7 +362,6 @@ export function NashimaAgent() {
             </label>
             <textarea
               id="nashima-agent-input"
-              ref={inputRef}
               rows={1}
               value={draft}
               onChange={(e) => setDraft(e.target.value)}

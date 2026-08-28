@@ -112,6 +112,3 @@ export function findRegistrationGroup(slug: string) {
 
 /** לתצוגה מחוץ לטופס (כמו רשימת השיעורים) — אותו מקור, בלי לשכפל. */
 export const eveningGroup = registrationGroups[1];
-
-/** מגבלת קיבולת קשיחה. מקור האמת בזמן ריצה הוא מסד הנתונים. */
-export const CAPACITY = morningGroup.capacity;

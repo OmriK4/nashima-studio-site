@@ -1,36 +1,79 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# סטודיו נשימה
 
-## Getting Started
+דף הנחיתה ומערכת ההרשמה של סטודיו נשימה — סטודיו פילאטיס מזרן ברמת גן.
+האתר מציג את הסטודיו ואת הקבוצות הפעילות, ומאפשר הרשמה ישירה לקבוצה —
+דרך טופס, או דרך "נשימה כאן", עוזרת דיגיטלית שיושבת בפינת הדף.
 
-First, run the development server:
+## הטכנולוגיה
+
+- **Next.js 16** (App Router) + **TypeScript**
+- **Tailwind CSS v4**
+- **Frank Ruhl Libre** לכותרות ו-**Assistant** לגוף הטקסט, נטענים דרך `next/font`
+- הדף כולו RTL בעברית
+- **n8n + Google Sheets** הם שכבת האוטומציה וההתמדה — אין מסד נתונים בפרויקט עצמו
+
+## הרצה מקומית
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+האתר יעלה על [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+פקודות נוספות:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build     # בילד לפרודקשן
+npm run lint      # בדיקת ESLint
+```
 
-## Learn More
+## משתני סביבה
 
-To learn more about Next.js, take a look at the following resources:
+יוצרים `.env.local` בשורש הפרויקט עם שני המשתנים הבאים:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| משתנה | תפקיד |
+| --- | --- |
+| `N8N_WEBHOOK_URL` | כתובת ה-webhook ב-n8n שמקבל את ההרשמות |
+| `N8N_WEBHOOK_SECRET` | סוד משותף שנשלח בכותרת ומאומת בצד n8n |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+שניהם צד-שרת בלבד ואינם מגיעים לדפדפן. בלי שניהם נקודת הקצה של ההרשמה
+מחזירה שגיאה מפורשת ולא "הצלחה" מדומה — כדי שלא יובטח מקום שלא נשמר.
 
-## Deploy on Vercel
+בסביבת הפרודקשן המשתנים מוגדרים בהגדרות הפרויקט ב-Vercel. שינוי של משתנה
+סביבה אינו משפיע על דיפלוימנט קיים — צריך דיפלוי חדש.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## מבנה הפרויקט
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+app/
+  api/chat/        פרוקסי לעוזרת הדיגיטלית (שרת-לשרת, עוקף מגבלות CORS)
+  api/groups/      פרטי הקבוצות, לקריאה בלבד
+  api/register/    קליטת הרשמה והעברתה ל-n8n
+  layout.tsx       שלד הדף, גופנים ומטא-דאטה
+  page.tsx         הרכבת הסקשנים לדף אחד
+components/
+  sections/        סקשני הדף לפי סדר הופעתם
+  NashimaAgent.tsx ווידג'ט הצ'אט של העוזרת הדיגיטלית
+  ui.tsx           רכיבים משותפים (Section, CtaButton)
+content/
+  site.ts          מקור האמת לכל פרטי העסק
+  sections.ts      רשימת הסקשנים — ממנה נגזרים גם הדף וגם הניווט
+  images.ts        מיפוי הנכסים החזותיים
+lib/
+  schema.ts        ולידציה (Zod) לטופס ולשרת
+  phone.ts         נרמול מספרי טלפון ישראליים
+  http.ts          בדיקת same-origin לנקודות הקצה
+```
+
+## עריכת תוכן
+
+כל פרטי העסק — כתובת, שעות, מחירים, תאריכים ופרטי קשר — יושבים
+ב-`content/site.ts` **בלבד**. שינוי שם מתעדכן מעצמו בדף, בטופס, במסך
+האישור ובמיילים שנשלחים ללקוחה ולבעלת הסטודיו. אין לשכפל את הערכים
+האלה למקומות אחרים.
+
+## פריסה
+
+הפרויקט מתארח ב-Vercel ומחובר ל-branch `main`. כל דחיפה ל-`main` יוצרת
+דיפלוי חדש אוטומטית.

@@ -8,8 +8,11 @@ import { images } from "@/content/images";
 /**
  * "נשימה כאן" — העוזרת הדיגיטלית של הסטודיו.
  *
- * מדברת מול Chat Trigger של n8n במצב streaming: התשובה מגיעה כשורות
- * NDJSON ({type:'begin'|'item'|'end'|'error'}) ונכתבת למסך תוך כדי.
+ * מדברת עם /api/chat — פרוקסי באותו מקור לסוכנת ב-n8n, לא עם n8n
+ * ישירות. כך הווידג'ט עובד מכל כתובת שהאתר רץ עליה, כולל כתובות
+ * דיפלוימנט זמניות של Vercel, בלי תלות ברשימת allowedOrigins ב-n8n.
+ * התשובה מגיעה כשורות NDJSON ({type:'begin'|'item'|'end'|'error'})
+ * ונכתבת למסך תוך כדי.
  *
  * שלוש החלטות שחשוב לשמור עליהן:
  * 1. הטקסט מהמודל נכנס כ-children של React בלבד, לעולם לא כ-HTML.
@@ -19,8 +22,7 @@ import { images } from "@/content/images";
  *    בוצעה. הדף מסתיר אותו ומשתמש בו כמקור האמת היחיד להצלחה.
  */
 
-const ENDPOINT =
-  "https://omrik.app.n8n.cloud/webhook/a0339a6c-32e4-4dd9-a95a-e5ab1fe8af66/chat";
+const ENDPOINT = "/api/chat";
 const SESSION_KEY = "nashima_chat_session_v1";
 const SENTINEL = "[[REGISTERED]]";
 const TIMEOUT_MS = 120000;
@@ -157,10 +159,8 @@ export function NashimaAgent() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            action: "sendMessage",
             sessionId: readSessionId(),
             chatInput: clean,
-            source: "nashima-website-chat",
           }),
           signal: controller.signal,
         });

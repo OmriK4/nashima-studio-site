@@ -1,7 +1,14 @@
 import { NextResponse } from "next/server";
 import { registrationSchema } from "@/lib/schema";
 import { normalizeIsraeliMobile } from "@/lib/phone";
+import { sameOrigin } from "@/lib/http";
 import { findRegistrationGroup, studio, practicalInfo, contact } from "@/content/site";
+
+// ה-workflow קורא Sheet, כותב שורה ושולח שני מיילים לפני שהוא עונה —
+// נמדד בפועל סביב 7-8 שניות, ולפעמים יותר. maxDuration מרים את תקרת
+// זמן הריצה של הפונקציה ב-Vercel, ו-AbortSignal נותן לה מרווח נשימה
+// אמיתי לפני שהדפדפן מוותר ומציג "תקלה זמנית" על הרשמה שבפועל הצליחה.
+export const maxDuration = 30;
 
 // שליחה מהירה מזה נחשבת חשודה — בן אדם לא ממלא טופס תוך פחות משנייה
 const MIN_FILL_TIME_MS = 1200;
@@ -35,22 +42,6 @@ function rateLimited(key: string) {
     }
   }
   return false;
-}
-
-/**
- * הטופס באתר הוא הצרכן היחיד של נקודת הקצה הזו, והדפדפן תמיד שולח
- * Origin ב-POST. דרישה שה-Origin יתאים ל-Host חוסמת סקריפטים חיצוניים
- * וטפסים באתרים אחרים, בלי לקבע דומיין בקוד.
- */
-function sameOrigin(request: Request) {
-  const origin = request.headers.get("origin");
-  const host = request.headers.get("host");
-  if (!origin || !host) return false;
-  try {
-    return new URL(origin).host === host;
-  } catch {
-    return false;
-  }
 }
 
 /**
@@ -187,7 +178,7 @@ export async function POST(request: Request) {
           : {}),
       },
       body: JSON.stringify(lead),
-      signal: AbortSignal.timeout(8000),
+      signal: AbortSignal.timeout(25000),
     });
 
     if (!n8nRes.ok) {

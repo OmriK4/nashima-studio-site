@@ -1,58 +1,59 @@
 @import "tailwindcss";
 
 /*
- * שפה חזותית: Warm Editorial Calm
- * הפלטה נגזרה מהצילומים של הסטודיו — קרם, חול, אלון, גרייג'.
- * האדום הרווי שמור לצילומים בלבד; פעולות משתמשות ב-clay.
+ * שפה חזותית: "לפנות בוקר"
+ * הדף חי בשעה שלפני שיעור הבוקר — חושך חם של סטודיו לפני אור ראשון.
+ * הפלטה: חום-שחור עמוק (לא שחור טכנולוגי), שנהב חם לטקסט, וזהב-שחר
+ * לפעולות. ככל שגוללים אל טופס ההרשמה, הרקע מתחמם — הזריחה מתקרבת.
+ *
+ * שעון הנשימה: rAF יחיד (BreathClock) כותב את ‎--breath‎ (0..1) על
+ * html לפי הזמן המוחלט, כך שכל מי שקורא את המשתנה — כולל הקנבס —
+ * נושם באותה פאזה בדיוק. מחזור מלא: 8 שניות. שאיפה 4, נשיפה 4.
  */
 :root {
-  --cream: #f7f1e8;
-  --cream-deep: #f0e7db;
-  --milk: #fdfaf6;
-  --sand: #e6dbcb;
-  --greige: #c9bcab;
-  --taupe: #a3907c;
-  --ink: #3a332c;
-  --ink-soft: #6b6157;
-  --clay: #9d3b2f;
-  --clay-hover: #863026;
+  --night: #16110e;
+  --night-soft: #1f1813;
+  --night-lift: #2a2018;
+  --seam: #3b2d21;
+  --ivory: #f1e8db;
+  --ivory-dim: #bcab93;
+  --dusk: #8b7a64;
+  --dawn: #e2a45c;
+  --dawn-bright: #eebd7e;
+  --ember: #c46f52;
+
+  /* נכתב על ידי BreathClock; ‎0‎ = סוף נשיפה, ‎1‎ = שיא שאיפה */
+  --breath: 0;
+  /* נכתב על ידי SunriseLayer; ‎0‎ = לילה מלא, ‎1‎ = אור ראשון */
+  --sunrise: 0;
 }
 
 @theme inline {
-  --color-cream: var(--cream);
-  --color-cream-deep: var(--cream-deep);
-  --color-milk: var(--milk);
-  --color-sand: var(--sand);
-  --color-greige: var(--greige);
-  --color-taupe: var(--taupe);
-  --color-ink: var(--ink);
-  --color-ink-soft: var(--ink-soft);
-  --color-clay: var(--clay);
-  --color-clay-hover: var(--clay-hover);
+  --color-night: var(--night);
+  --color-night-soft: var(--night-soft);
+  --color-night-lift: var(--night-lift);
+  --color-seam: var(--seam);
+  --color-ivory: var(--ivory);
+  --color-ivory-dim: var(--ivory-dim);
+  --color-dusk: var(--dusk);
+  --color-dawn: var(--dawn);
+  --color-dawn-bright: var(--dawn-bright);
+  --color-ember: var(--ember);
 
   --font-display: var(--font-frank), Georgia, serif;
   --font-body: var(--font-assistant), system-ui, sans-serif;
 }
 
-/*
- * גרעין נייר עדין מאוד — שכבת-על אחת מעל כל הדף.
- * מקרב את הרקעים השטוחים לתחושת הנייר של הלוגו.
- * לא נוגע במיקום של אף אלמנט, כדי לא לדרוס position של רכיבים.
- * SVG מוטבע — בלי בקשת רשת ובלי קובץ תמונה.
- */
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  pointer-events: none;
-  opacity: 0.4;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+html {
+  background: var(--night);
 }
 
 body {
-  background: var(--cream);
-  color: var(--ink);
+  /* isolate — כדי ששכבת הזריחה (::before, z-index שלילי) תצויר מעל
+     הרקע של body עצמו אבל מתחת לכל התוכן, בלי לגעת במיקום של אף צאצא */
+  isolation: isolate;
+  background: var(--night);
+  color: var(--ivory);
   font-family: var(--font-body);
   /* קהל היעד 35+, קריאות במובייל היא דרישת נגישות ולא טעם */
   font-size: 17px;
@@ -60,32 +61,128 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/*
+ * שכבת הזריחה — קבועה מאחורי התוכן, שקופה בראש הדף ומתחממת עם
+ * הגלילה. שני מוקדים: זוהר זהב שעולה מלמטה (השמש מאחורי האופק)
+ * והסמקה קלה של כל החדר. השליטה במשתנה אחד בלבד, בלי JS על כל פריים.
+ */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: var(--sunrise);
+  background:
+    radial-gradient(
+      ellipse 120% 55% at 50% 108%,
+      color-mix(in srgb, var(--dawn) 26%, transparent) 0%,
+      color-mix(in srgb, var(--ember) 12%, transparent) 45%,
+      transparent 75%
+    ),
+    linear-gradient(
+      to top,
+      color-mix(in srgb, var(--night-lift) 80%, var(--dawn) 20%) 0%,
+      transparent 60%
+    );
+  transition: opacity 0.2s linear;
+}
+
+/*
+ * גרעין נייר עדין — מקרב את המשטחים הכהים למרקם של חדר אמיתי.
+ * SVG מוטבע, בלי בקשת רשת.
+ */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.5;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+}
+
 h1, h2, h3 {
   font-family: var(--font-display);
   font-weight: 300;
-  line-height: 1.25;
+  line-height: 1.22;
   letter-spacing: -0.01em;
 }
 
+::selection {
+  background: color-mix(in srgb, var(--dawn) 40%, transparent);
+  color: var(--ivory);
+}
+
 :focus-visible {
-  outline: 2px solid var(--clay);
+  outline: 2px solid var(--dawn);
   outline-offset: 3px;
   border-radius: 4px;
 }
 
+/* ---------------------------------------------------------------
+ * מחלקות הנשימה — קוראות את ‎--breath‎ שכותב BreathClock.
+ * שינוי המשתנה על html מזיז את כולן יחד, באותה פאזה.
+ * --------------------------------------------------------------- */
+
+/* התרחבות עדינה — לכפתור הסוכנת ולעיטורים */
+.breathes {
+  transform: scale(calc(1 + var(--breath) * 0.045));
+}
+
+/* הילה שמתמלאת אור בשאיפה — ל-CTA הראשי */
+.breath-glow {
+  box-shadow:
+    0 0 calc(18px + var(--breath) * 26px)
+      color-mix(in srgb, var(--dawn) calc(18% + var(--breath) * 22%), transparent),
+    0 6px 24px -8px rgba(0, 0, 0, 0.6);
+}
+
+/* טבעת שנושמת סביב הפריט המודגש — כרטיס הקבוצה והאפשרות בטופס */
+.breath-ring {
+  box-shadow: 0 0 0 calc(1px + var(--breath) * 5px)
+    color-mix(in srgb, var(--dawn) calc(30% - var(--breath) * 18%), transparent);
+}
+
+/* ---------------------------------------------------------------
+ * אנימציות כניסה ל-Hero — פעם אחת בטעינה, בהדרגה.
+ * --------------------------------------------------------------- */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.rise-in {
+  animation: rise-in 1.1s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+
+/* חץ הגלילה בתחתית ה-Hero — טובל ועולה בקצב הנשימה */
+@keyframes drift-down {
+  0%, 100% { transform: translateY(0); opacity: 0.55; }
+  50% { transform: translateY(7px); opacity: 1; }
+}
+
+.drift-down {
+  animation: drift-down 4s ease-in-out infinite;
+}
+
 /*
  * תג "חדש בסטודיו" — פעימה עדינה, פעם אחת כל 3 שניות.
- * משרעת קטנה (סקייל וטבעת-צל צנועים) כדי שהתשומת לב תיפול על
- * המלל ולא על התנועה עצמה.
  */
 @keyframes badge-pulse {
   0%, 80%, 100% {
     transform: scale(1);
-    box-shadow: 0 0 0 0 color-mix(in srgb, var(--clay) 30%, transparent);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--dawn) 30%, transparent);
   }
   90% {
     transform: scale(1.03);
-    box-shadow: 0 0 0 4px color-mix(in srgb, var(--clay) 0%, transparent);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--dawn) 0%, transparent);
   }
 }
 
@@ -94,43 +191,15 @@ h1, h2, h3 {
 }
 
 /*
- * אפשרות הקבוצה המודגשת בטופס — טבעת חמה שנושמת פנימה והחוצה,
- * כדי שהעין תיפול עליה בלי שהאפשרות תזוז ממקומה.
- * הגבול בצבע clay נשאר גם כשהתנועה מכובה, כך שההדגשה לא הולכת לאיבוד.
- */
-@keyframes option-glow {
-  0%, 100% {
-    box-shadow: 0 0 0 0 color-mix(in srgb, var(--clay) 26%, transparent);
-  }
-  55% {
-    box-shadow: 0 0 0 7px color-mix(in srgb, var(--clay) 0%, transparent);
-  }
-}
-
-.option-glow {
-  animation: option-glow 3s ease-in-out infinite;
-}
-
-/*
- * ברגע שהאפשרות נבחרה אין יותר מה למשוך אליו את העין,
- * והפעימה הופכת להסחה. הכלל יושב כאן ולא כ-utility בטופס,
- * כי CSS ללא layer מנצח את ה-utilities של Tailwind בקסקייד.
- */
-.option-glow:has(:checked) {
-  animation: none;
-}
-
-/*
  * "נשימה כאן" — הכפתור הצף. גל אחד יוצא מהעיגול כל 2 שניות.
- * המשרעת קטנה בכוונה: מספיק כדי שהעין תיתפס, בלי להבהב ובלי
- * להזיז את הכפתור ממקומו. כשהחלון פתוח אין יותר מה למשוך אליו.
+ * כשהחלון פתוח אין יותר מה למשוך אליו.
  */
 @keyframes agent-ripple {
   0% {
-    box-shadow: 0 0 0 0 color-mix(in srgb, var(--clay) 22%, transparent);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--dawn) 26%, transparent);
   }
   70%, 100% {
-    box-shadow: 0 0 0 14px color-mix(in srgb, var(--clay) 0%, transparent);
+    box-shadow: 0 0 0 14px color-mix(in srgb, var(--dawn) 0%, transparent);
   }
 }
 
@@ -148,11 +217,72 @@ h1, h2, h3 {
   animation: none;
 }
 
+/*
+ * צילומי הסטודיו צולמו באור יום על רקע קרם. כדי שיישבו בתוך החושך
+ * החם בלי להרגיש מודבקים: התאמת טמפרטורה קלה + מסגרת תפר וצל עומק.
+ */
+.photo-warm {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.9rem;
+  border: 1px solid var(--seam);
+  box-shadow: 0 24px 48px -24px rgba(0, 0, 0, 0.7);
+}
+
+.photo-warm img,
+.photo-warm video {
+  filter: sepia(0.14) saturate(0.94) brightness(0.94);
+}
+
+.photo-warm::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background:
+    linear-gradient(
+      to top,
+      color-mix(in srgb, var(--night) 34%, transparent) 0%,
+      transparent 32%
+    );
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--dawn) 10%, transparent);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  /* בלי נשימה — המחלקות קופאות במצב מנוחה קריא */
+  .breathes { transform: none; }
+  .breath-glow { box-shadow: 0 6px 24px -8px rgba(0, 0, 0, 0.6); }
+  .breath-ring {
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--dawn) 30%, transparent);
+  }
+}
+
+/*
+ * האפשרות המודגשת בטופס נושמת רק כל עוד לא נבחרה —
+ * ברגע שנבחרה אין יותר מה למשוך אליו את העין.
+ */
+.option-breath {
+  box-shadow: 0 0 0 calc(1px + var(--breath) * 5px)
+    color-mix(in srgb, var(--dawn) calc(30% - var(--breath) * 18%), transparent);
+}
+
+.option-breath:has(:checked) {
+  box-shadow: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .option-breath {
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--dawn) 30%, transparent);
+  }
+  .option-breath:has(:checked) {
+    box-shadow: none;
   }
 }

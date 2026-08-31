@@ -17,6 +17,10 @@ const assistant = Assistant({
   display: "swap",
 });
 
+export const viewport = {
+  themeColor: "#16110e",
+};
+
 export const metadata: Metadata = {
   title: `סטודיו ${studio.name} · ${morningGroup.title} ב${studio.city}`,
   description: `${morningGroup.discipline} ל${morningGroup.level} ב${morningGroup.dayLabel}, ${morningGroup.timeLabel}. קבוצה קטנה של עד ${morningGroup.capacity} משתתפים בסטודיו ${studio.name}, ${studio.street}, ${studio.city}.`,

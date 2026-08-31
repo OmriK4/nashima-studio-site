@@ -2,110 +2,116 @@ import Image from "next/image";
 import { studio, morningGroup } from "@/content/site";
 import { images } from "@/content/images";
 import { CtaButton } from "@/components/ui";
-import { HeroMedia } from "@/components/HeroMedia";
+import { BreathField, BreathWord } from "@/components/BreathField";
 
 /**
- * הכותרת היא הסטודיו, לא קבוצה מסוימת.
- * הקבוצה החדשה מופיעה מיד אחריה כהודעה — בולטת, אבל לא מחליפה את הזהות.
- *
- * גובה ה-Hero נגזר מיחס הממדים הטבעי של הסרטון (1280×720, כלומר 16:9):
- * 56.25vw הם בדיוק 9/16 מרוחב המסך, כך שהסרטון מוצג במלואו בלי מתיחה
- * ובלי חיתוך. זהו min-height ולא aspect-ratio, כדי שבמסכים צרים —
- * שבהם 16:9 נמוך מגובה התוכן — ה-Hero יגדל לפי התוכן במקום שהתוכן יגלוש.
+ * השעה שלפני שיעור הבוקר. חדר חשוך וחם, ובמרכזו שדה הנשימה —
+ * כדור נקודות אור שמתרחב ומתכווץ בקצב שכל הדף מסונכרן אליו.
+ * הטקסט יושב בתוך השדה, לא לידו: הכותרת היא חלק מהנשימה.
  */
 export function Hero() {
   return (
-    <header className="relative isolate flex min-h-[56.25vw] flex-col justify-center overflow-hidden bg-cream">
-      {/* הרקע: אותו סרטון שהיה עד עכשיו ברצועה שמתחת לכותרת */}
+    <header className="relative isolate flex min-h-[100dvh] flex-col overflow-hidden">
+      {/* שדה הנשימה — מאחורי הכול, על כל גובה ה-Hero */}
       <div className="absolute inset-0 -z-10">
-        <HeroMedia />
+        <BreathField />
       </div>
 
-      {/*
-        הצעיף לא אחיד: רצפה נמוכה על כל הפריים, כדי שהחדר, החלונות
-        והקבוצה ייראו — ומוקד רך של קרם בדיוק מאחורי עמודת הטקסט,
-        שם צריך את הניגודיות. פס דק בקצה הימני נותן קרקע לשמות
-        הסקשנים בניווט הנקודות, והפס התחתון מחבר את ה-Hero לרקע
-        הקרם של הסקשן הבא בלי קו הפרדה.
-      */}
+      {/* עיגון רך של מרכז הפריים, כדי שהכותרת תקרא גם על נקודות בהירות */}
       <div
         aria-hidden
         className="absolute inset-0 -z-10"
         style={{
-          background: [
-            "radial-gradient(ellipse 46% 48% at 50% 52%, color-mix(in srgb, var(--cream) 66%, transparent) 0%, color-mix(in srgb, var(--cream) 48%, transparent) 58%, transparent 92%)",
-            "linear-gradient(to left, color-mix(in srgb, var(--cream) 52%, transparent) 0%, transparent 17%)",
-            "linear-gradient(to bottom, color-mix(in srgb, var(--cream) 22%, transparent) 0%, transparent 20%, transparent 64%, var(--cream) 100%)",
-            "color-mix(in srgb, var(--cream) 30%, transparent)",
-          ].join(", "),
+          background:
+            "radial-gradient(ellipse 42% 36% at 50% 52%, color-mix(in srgb, var(--night) 55%, transparent) 0%, transparent 100%)",
         }}
       />
 
-      <div className="mx-auto flex w-full max-w-3xl flex-col items-center px-6 py-14 text-center">
-        {/*
-          הלוגו הוא קו דק ובהיר מאוד (‎#BEB0A5‎), ומעל וידאו הוא נבלע.
-          שתי הפעולות כאן לא נוגעות בקובץ ולא בגודל: הילת קרם נותנת לו
-          קרקע נקייה מול הרקע הנע, וצל עדין מגדיר את הקווים עצמם.
-        */}
-        <span className="relative inline-block">
-          <span
-            aria-hidden
-            className="absolute top-1/2 left-1/2 -z-0 h-[220%] w-[220%] -translate-x-1/2 -translate-y-1/2 rounded-full"
-            style={{
-              background:
-                "radial-gradient(closest-side, var(--cream) 0%, color-mix(in srgb, var(--cream) 72%, transparent) 45%, transparent 100%)",
-            }}
-          />
+      <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col items-center justify-center px-6 py-16 text-center">
+        <div className="rise-in" style={{ animationDelay: "0.1s" }}>
           <Image
             src={images.logo.src}
             alt={images.logo.alt}
             width={images.logo.width}
             height={images.logo.height}
             priority
-            className="relative mx-auto h-20 w-auto brightness-[0.82] drop-shadow-[0_1px_1.5px_color-mix(in_srgb,var(--ink)_30%,transparent)] sm:h-24"
+            className="mx-auto h-20 w-auto opacity-90 sm:h-24"
           />
-        </span>
+        </div>
 
-        <h1 className="mt-8 text-4xl leading-tight text-balance sm:text-6xl">
-          סטודיו הפילאטיס שלך
+        <div className="rise-in mt-10" style={{ animationDelay: "0.45s" }}>
+          <BreathWord />
+        </div>
+
+        <h1
+          className="rise-in mt-6 text-5xl leading-[1.15] text-ivory text-balance sm:text-7xl"
+          style={{ animationDelay: "0.65s" }}
+        >
+          לנשום. לזוז.
+          <br />
+          <span className="text-dawn">לחזור לעצמך.</span>
         </h1>
-        <p className="mx-auto mt-5 max-w-xl text-lg text-ink-soft text-balance">
-          קבוצות של עד {studio.roomCapacity} אנשים, כדי שיהיה אפשר לראות כל אחד
-          ואחת במהלך המפגש. {studio.street}, {studio.city}, משנת{" "}
-          {studio.activeSince}.
+
+        <p
+          className="rise-in mx-auto mt-7 max-w-xl text-lg text-ivory-dim text-balance"
+          style={{ animationDelay: "0.9s" }}
+        >
+          סטודיו פילאטיס קטן ואישי. קבוצות של עד {studio.roomCapacity} אנשים,
+          כדי שיהיה אפשר לראות כל אחד ואחת במהלך המפגש. {studio.street},{" "}
+          {studio.city}, משנת {studio.activeSince}.
         </p>
 
-        <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
-          <CtaButton href="#classes">השיעורים בסטודיו</CtaButton>
-          <CtaButton href="#place" variant="quiet">
-            איך מגיעים
+        <div
+          className="rise-in mt-10 flex flex-wrap items-center justify-center gap-4"
+          style={{ animationDelay: "1.1s" }}
+        >
+          <CtaButton breathing>שריין לי מקום</CtaButton>
+          <CtaButton href="#classes" variant="quiet">
+            השיעורים בסטודיו
           </CtaButton>
         </div>
 
-        {/*
-          ההודעה הפעילה: הקבוצה שנפתחת עכשיו.
-          הרקע שקוף חלקית עם טשטוש (לא bg-milk אטום), כדי שהכרטיס יתמזג
-          עם הסרטון מאחוריו במקום לשבת עליו כריבוע לבן בולט. המלל מפצה
-          על השקיפות במשקל וצל טקסט עדין, כך שהקריאות לא נפגעת.
-        */}
+        {/* ההודעה הפעילה: הקבוצה שנפתחת עכשיו */}
         <a
           href="#group"
-          className="mt-10 flex flex-col items-center gap-1 rounded-xl border border-clay/30 bg-milk/40 px-6 py-5 backdrop-blur-sm transition-colors hover:border-clay/55 hover:bg-milk/55"
+          className="rise-in group mt-12 flex flex-col items-center gap-1 rounded-2xl border border-dawn/25 bg-night-soft/60 px-7 py-5 backdrop-blur-sm transition-colors duration-300 hover:border-dawn/55 hover:bg-night-lift/70"
+          style={{ animationDelay: "1.3s" }}
         >
-          <span className="text-xs font-semibold tracking-[0.18em] text-clay drop-shadow-[0_1px_2px_rgba(255,255,255,0.5)]">
+          <span className="text-xs font-semibold tracking-[0.28em] text-dawn">
             נפתחת עכשיו
           </span>
-          <span className="mt-1 text-xl font-semibold text-ink drop-shadow-[0_1px_3px_rgba(255,255,255,0.6)]">
+          <span className="mt-1.5 text-xl font-semibold text-ivory">
             {morningGroup.title}
           </span>
-          <span className="font-medium text-ink-soft drop-shadow-[0_1px_2px_rgba(255,255,255,0.5)]">
+          <span className="text-ivory-dim">
             {morningGroup.dayLabel}, {morningGroup.timeLabel} · מתחילים ב־
             {morningGroup.startDateLabel}
           </span>
-          <span className="mt-2 text-sm font-semibold text-clay underline underline-offset-4">
+          <span className="mt-2 text-sm font-semibold text-dawn underline underline-offset-4 transition-colors group-hover:text-dawn-bright">
             לפרטים ולשמירת מקום
           </span>
         </a>
+      </div>
+
+      {/* רמז הגלילה — הזריחה מחכה בתחתית הדף */}
+      <div
+        className="rise-in pb-7 text-center"
+        style={{ animationDelay: "1.7s" }}
+        aria-hidden
+      >
+        <span className="text-[11px] tracking-[0.4em] text-dusk">
+          הזריחה למטה
+        </span>
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.4"
+          strokeLinecap="round"
+          className="drift-down mx-auto mt-2 h-5 w-5 text-dusk"
+        >
+          <path d="M6 9l6 6 6-6" />
+        </svg>
       </div>
     </header>
   );

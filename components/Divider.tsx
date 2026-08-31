@@ -6,14 +6,14 @@
 export function Divider() {
   return (
     <div aria-hidden className="flex items-center justify-center gap-4 px-6">
-      <span className="h-px max-w-40 flex-1 bg-gradient-to-l from-transparent to-greige/60" />
+      <span className="h-px max-w-40 flex-1 bg-gradient-to-l from-transparent to-dusk/50" />
 
       <svg
         width="52"
         height="26"
         viewBox="0 0 52 26"
         fill="none"
-        className="shrink-0 text-greige"
+        className="breathes shrink-0 text-dusk"
       >
         <ellipse
           cx="20"
@@ -35,7 +35,7 @@ export function Divider() {
         />
       </svg>
 
-      <span className="h-px max-w-40 flex-1 bg-gradient-to-r from-transparent to-greige/60" />
+      <span className="h-px max-w-40 flex-1 bg-gradient-to-r from-transparent to-dusk/50" />
     </div>
   );
 }

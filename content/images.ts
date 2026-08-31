@@ -70,9 +70,3 @@ export const images = {
     alt: "ציוד הסטודיו מסודר על שולחן הכניסה",
   },
 } as const;
-
-/** רקע נע ב-Hero — דסקטופ בלבד, עם תמונה חלופית במובייל. */
-export const heroVideo = {
-  src: "/video/studio-class-loop.mp4",
-  poster: images.studioEmpty.src,
-} as const;

@@ -6,13 +6,13 @@ import { Section } from "@/components/ui";
 export function Who() {
   return (
     <Section id="who" eyebrow="למי זה מתאים" title="גם אם לא התאמנת שנים">
-      <p className="max-w-xl text-lg text-ink-soft">
+      <p className="max-w-xl text-lg text-ivory-dim">
         {practicalInfo.beginnerNote} קבוצת הבוקר החדשה נפתחת ברמת מתחילים,
         וכולם מתחילים מאותה נקודה.
       </p>
 
       <figure className="mt-10">
-        <div className="relative aspect-[3/2] overflow-hidden rounded-xl">
+        <div className="photo-warm aspect-[3/2]">
           <Image
             src={images.oneOnOne.src}
             alt={images.oneOnOne.alt}
@@ -21,7 +21,7 @@ export function Who() {
             className="object-cover"
           />
         </div>
-        <figcaption className="mt-3 text-sm text-taupe">
+        <figcaption className="mt-3 text-sm text-dusk">
           קבוצה קטנה מאפשרת ליווי אישי לאורך המפגש.
         </figcaption>
       </figure>

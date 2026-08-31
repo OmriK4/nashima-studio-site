@@ -42,7 +42,7 @@ export function BreathNav() {
       {/* מובייל */}
       <nav
         aria-label="ניווט בדף"
-        className="sticky top-0 z-40 border-b border-sand/70 bg-cream/90 backdrop-blur lg:hidden"
+        className="sticky top-0 z-40 border-b border-seam/70 bg-night/85 backdrop-blur lg:hidden"
       >
         <ul ref={chipsRef} className="flex gap-1 overflow-x-auto px-4 py-2.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {sections.map((s) => (
@@ -52,8 +52,8 @@ export function BreathNav() {
                 aria-current={active === s.id ? "true" : undefined}
                 className={`block rounded-full px-3.5 py-2 text-sm whitespace-nowrap transition-colors ${
                   active === s.id
-                    ? "bg-ink text-cream"
-                    : "text-ink-soft hover:text-ink"
+                    ? "bg-dawn font-semibold text-night"
+                    : "text-ivory-dim hover:text-ivory"
                 }`}
               >
                 {s.label}
@@ -80,15 +80,15 @@ export function BreathNav() {
                   aria-hidden
                   className={`h-[9px] w-[9px] shrink-0 rounded-full transition-all duration-300 ${
                     active === s.id
-                      ? "scale-125 bg-clay"
-                      : "bg-greige group-hover:bg-taupe"
+                      ? "scale-125 bg-dawn shadow-[0_0_10px_color-mix(in_srgb,var(--dawn)_60%,transparent)]"
+                      : "bg-dusk/50 group-hover:bg-dusk"
                   }`}
                 />
                 <span
                   className={`text-sm whitespace-nowrap transition-colors duration-300 ${
                     active === s.id
-                      ? "text-ink"
-                      : "text-taupe group-hover:text-ink-soft"
+                      ? "text-ivory"
+                      : "text-dusk group-hover:text-ivory-dim"
                   }`}
                 >
                   {s.label}

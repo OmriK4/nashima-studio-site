@@ -31,10 +31,10 @@ const SUBMIT_TIMEOUT_MS = 35000;
 // בלי w-full כאן בכוונה: השדה הכפול (טלפון) צריך רוחב חלקי,
 // וקלאס w-full שהיה כאן ניצח w-24/flex-1 לפי סדר הפלט הפנימי של Tailwind.
 const fieldBase =
-  "rounded-lg border bg-milk px-4 py-3 text-ink placeholder:text-taupe/70 " +
-  "focus:outline-none focus:ring-2 focus:ring-clay/40 transition-colors";
-const fieldValid = "border-sand focus:border-clay";
-const fieldInvalid = "border-clay/60";
+  "rounded-lg border bg-night px-4 py-3 text-ivory placeholder:text-dusk/60 " +
+  "focus:outline-none focus:ring-2 focus:ring-dawn/40 transition-colors";
+const fieldValid = "border-seam focus:border-dawn";
+const fieldInvalid = "border-ember/70";
 
 export function RegisterForm() {
   const [status, setStatus] = useState<Status>("idle");
@@ -138,24 +138,24 @@ export function RegisterForm() {
     const waitlisted = seatStatus === "waitlist";
 
     return (
-      <div className="rounded-xl border border-sand bg-milk p-6 sm:p-8">
-        <p className="text-sm tracking-[0.14em] text-clay">
+      <div className="rounded-xl text-right">
+        <p className="text-sm tracking-[0.2em] text-dawn">
           {waitlisted ? "נרשמת לרשימת ההמתנה" : "ההרשמה נקלטה"}
         </p>
-        <h3 className="mt-2 text-2xl">
+        <h3 className="mt-2 text-2xl text-ivory">
           {waitlisted
             ? "הקבוצה מלאה כרגע"
             : `מחכים לך ב${sentGroup.dayLabel}`}
         </h3>
 
         {waitlisted && (
-          <p className="mt-3 text-ink-soft">
+          <p className="mt-3 text-ivory-dim">
             שמרנו את מקומך ברשימת ההמתנה, ואם יתפנה מקום ניצור קשר בהקדם.
           </p>
         )}
 
         {/* שורה שאין לה נתון פשוט לא מוצגת — עדיף חסר על פני המצאה */}
-        <dl className="mt-6 space-y-2 text-ink-soft">
+        <dl className="mt-6 space-y-2 text-ivory-dim">
           <div>
             {sentGroup.dayLabel}, {sentGroup.timeLabel}
             {sentGroup.durationLabel && ` · ${sentGroup.durationLabel}`}
@@ -171,11 +171,11 @@ export function RegisterForm() {
           <div>{sentGroup.paymentNote}</div>
         </dl>
 
-        <p className="mt-6 border-r-2 border-clay/40 pr-4 text-sm text-ink-soft">
+        <p className="mt-6 border-r-2 border-dawn/40 pr-4 text-sm text-ivory-dim">
           {practicalInfo.medicalNote}
         </p>
 
-        <p className="mt-6 text-sm text-taupe">
+        <p className="mt-6 text-sm text-dusk">
           שאלה לפני המפגש? אפשר להתקשר: {contact.phone}
         </p>
       </div>
@@ -188,14 +188,14 @@ export function RegisterForm() {
    */
   if (status === "unsure") {
     return (
-      <div className="rounded-xl border border-clay/30 bg-milk p-6 sm:p-8">
-        <p className="text-sm tracking-[0.14em] text-clay">החיבור נקטע</p>
-        <h3 className="mt-2 text-2xl">לא הצלחנו לוודא את ההרשמה</h3>
-        <p className="mt-4 text-ink-soft">
+      <div className="rounded-xl border border-ember/40 bg-night/40 p-6 sm:p-8 text-right">
+        <p className="text-sm tracking-[0.2em] text-dawn">החיבור נקטע</p>
+        <h3 className="mt-2 text-2xl text-ivory">לא הצלחנו לוודא את ההרשמה</h3>
+        <p className="mt-4 text-ivory-dim">
           ייתכן שההרשמה כן נקלטה. כדאי לבדוק אם הגיע מייל אישור לפני
           שממלאים את הטופס שוב, כדי שלא תיווצר הרשמה כפולה.
         </p>
-        <p className="mt-6 text-sm text-taupe">
+        <p className="mt-6 text-sm text-dusk">
           אם לא הגיע מייל, אפשר להתקשר: {contact.phone}
         </p>
       </div>
@@ -217,7 +217,7 @@ export function RegisterForm() {
       </div>
 
       <fieldset>
-        <legend className="mb-2 text-sm text-ink-soft">לאיזו קבוצה נרשמים?</legend>
+        <legend className="mb-2 text-sm text-ivory-dim">לאיזו קבוצה נרשמים?</legend>
         <div
           className="flex gap-3"
           role="radiogroup"
@@ -226,10 +226,10 @@ export function RegisterForm() {
           {registrationGroups.map((group) => (
             <label
               key={group.slug}
-              className={`flex flex-1 cursor-pointer flex-col items-center justify-center gap-0.5 rounded-lg border bg-milk px-4 py-3 text-ink transition-colors has-[:checked]:border-clay has-[:checked]:bg-cream-deep has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-clay/40 ${
+              className={`flex flex-1 cursor-pointer flex-col items-center justify-center gap-0.5 rounded-lg border bg-night px-4 py-3 text-ivory transition-colors has-[:checked]:border-dawn has-[:checked]:bg-night-lift has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-dawn/40 ${
                 group.highlight
-                  ? "option-glow border-clay/40"
-                  : "border-sand"
+                  ? "option-breath border-dawn/40"
+                  : "border-seam"
               }`}
             >
               <input
@@ -239,13 +239,13 @@ export function RegisterForm() {
                 {...register("group")}
               />
               <span>{group.dayLabel}</span>
-              <span className="text-sm text-ink-soft">{group.timeLabel}</span>
+              <span className="text-sm text-ivory-dim">{group.timeLabel}</span>
               {/*
                 טקסט שיווקי בלבד, לא נתון אמיתי מהגיליון — דגל להחלפה
                 כשיהיה זרם הרשמות אמיתי לקבוצה הזו.
               */}
               {group.highlight && (
-                <span className="mt-1 text-[11px] font-medium text-clay">
+                <span className="mt-1 text-[11px] font-medium text-dawn">
                   🔥 כבר נרשמו 4 — שריינו את המקום שלכם
                 </span>
               )}
@@ -253,14 +253,14 @@ export function RegisterForm() {
           ))}
         </div>
         {errors.group && (
-          <p id={`${groupId}-err`} className="mt-1.5 text-sm text-clay">
+          <p id={`${groupId}-err`} className="mt-1.5 text-sm text-ember">
             {errors.group.message}
           </p>
         )}
       </fieldset>
 
       <div>
-        <label htmlFor={fullNameId} className="mb-2 block text-sm text-ink-soft">
+        <label htmlFor={fullNameId} className="mb-2 block text-sm text-ivory-dim">
           שם מלא
         </label>
         <input
@@ -273,14 +273,14 @@ export function RegisterForm() {
           {...register("fullName")}
         />
         {errors.fullName && (
-          <p id={`${fullNameId}-err`} className="mt-1.5 text-sm text-clay">
+          <p id={`${fullNameId}-err`} className="mt-1.5 text-sm text-ember">
             {errors.fullName.message}
           </p>
         )}
       </div>
 
       <div>
-        <label htmlFor={phoneId} className="mb-2 block text-sm text-ink-soft">
+        <label htmlFor={phoneId} className="mb-2 block text-sm text-ivory-dim">
           טלפון נייד
         </label>
         <div className="flex gap-2" dir="ltr">
@@ -312,14 +312,14 @@ export function RegisterForm() {
           />
         </div>
         {(errors.phonePrefix || errors.phoneLocal) && (
-          <p id={`${phoneId}-err`} className="mt-1.5 text-sm text-clay">
+          <p id={`${phoneId}-err`} className="mt-1.5 text-sm text-ember">
             {errors.phoneLocal?.message ?? errors.phonePrefix?.message}
           </p>
         )}
       </div>
 
       <div>
-        <label htmlFor={emailId} className="mb-2 block text-sm text-ink-soft">
+        <label htmlFor={emailId} className="mb-2 block text-sm text-ivory-dim">
           אימייל
         </label>
         <input
@@ -334,14 +334,14 @@ export function RegisterForm() {
           {...register("email")}
         />
         {errors.email && (
-          <p id={`${emailId}-err`} className="mt-1.5 text-sm text-clay">
+          <p id={`${emailId}-err`} className="mt-1.5 text-sm text-ember">
             {errors.email.message}
           </p>
         )}
       </div>
 
       <fieldset>
-        <legend className="mb-2 text-sm text-ink-soft">
+        <legend className="mb-2 text-sm text-ivory-dim">
           האם זו הפעם הראשונה שלך בפילאטיס?
         </legend>
         <div
@@ -352,7 +352,7 @@ export function RegisterForm() {
           {(["yes", "no"] as const).map((value) => (
             <label
               key={value}
-              className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-lg border border-sand bg-milk px-4 py-3 text-ink transition-colors has-[:checked]:border-clay has-[:checked]:bg-cream-deep has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-clay/40"
+              className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-lg border border-seam bg-night px-4 py-3 text-ivory transition-colors has-[:checked]:border-dawn has-[:checked]:bg-night-lift has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-dawn/40"
             >
               <input
                 type="radio"
@@ -365,37 +365,37 @@ export function RegisterForm() {
           ))}
         </div>
         {errors.firstTime && (
-          <p id={`${firstTimeId}-err`} className="mt-1.5 text-sm text-clay">
+          <p id={`${firstTimeId}-err`} className="mt-1.5 text-sm text-ember">
             {errors.firstTime.message}
           </p>
         )}
       </fieldset>
 
       <div>
-        <label className="flex cursor-pointer items-start gap-3 rounded-lg border border-sand bg-milk px-4 py-3 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-clay/40">
+        <label className="flex cursor-pointer items-start gap-3 rounded-lg border border-seam bg-night px-4 py-3 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-dawn/40">
           <input
             id={medicalId}
             type="checkbox"
-            className="mt-1 h-4 w-4 shrink-0 accent-clay"
+            className="mt-1 h-4 w-4 shrink-0 accent-dawn"
             aria-invalid={!!errors.medicalAck}
             aria-describedby={
               errors.medicalAck ? `${medicalId}-err` : undefined
             }
             {...register("medicalAck")}
           />
-          <span className="text-sm text-ink-soft">
+          <span className="text-sm text-ivory-dim">
             קראתי, ואם אני אחרי ניתוח או פציעה אביא אישור רופא לפני ההשתתפות.
           </span>
         </label>
         {errors.medicalAck && (
-          <p id={`${medicalId}-err`} className="mt-1.5 text-sm text-clay">
+          <p id={`${medicalId}-err`} className="mt-1.5 text-sm text-ember">
             {errors.medicalAck.message}
           </p>
         )}
       </div>
 
       {status === "error" && (
-        <p role="alert" className="rounded-lg bg-cream-deep px-4 py-3 text-sm text-ink-soft">
+        <p role="alert" className="rounded-lg border border-ember/40 bg-night-lift px-4 py-3 text-sm text-ivory-dim">
           לא הצלחנו לשלוח את הטופס. אפשר לנסות שוב, או להתקשר: {contact.phone}
         </p>
       )}
@@ -406,7 +406,7 @@ export function RegisterForm() {
         <button
           type="submit"
           disabled={status === "submitting" || isSubmitting}
-          className="inline-flex w-full items-center justify-center rounded-full bg-clay px-7 py-3.5 text-base text-cream transition-colors hover:bg-clay-hover disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
+          className="breath-glow inline-flex w-full items-center justify-center rounded-full bg-dawn px-8 py-3.5 text-base font-semibold text-night transition-colors hover:bg-dawn-bright disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
         >
           {status === "submitting" || isSubmitting ? "שולח..." : "שריין לי מקום"}
         </button>

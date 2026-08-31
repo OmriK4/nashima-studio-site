@@ -247,7 +247,7 @@ export function NashimaAgent() {
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-label={open ? "סגירת הצ׳אט" : "פתיחת הצ׳אט עם העוזרת הדיגיטלית"}
-        className={`agent-launcher fixed bottom-5 left-5 z-50 flex h-[4.25rem] w-[4.25rem] items-center justify-center rounded-full border border-clay/30 bg-milk shadow-[0_10px_28px_-12px_rgba(58,51,44,0.45)] transition-[transform,box-shadow,opacity] duration-300 hover:-translate-y-0.5 hover:border-clay/60 sm:h-20 sm:w-20 ${
+        className={`agent-launcher breathes fixed bottom-5 left-5 z-50 flex h-[4.25rem] w-[4.25rem] items-center justify-center rounded-full border border-dawn/35 bg-night-lift shadow-[0_10px_30px_-10px_rgba(0,0,0,0.75)] transition-[border-color,opacity] duration-300 hover:border-dawn/70 sm:h-20 sm:w-20 ${
           open ? "pointer-events-none scale-90 opacity-0" : "opacity-100"
         }`}
       >
@@ -262,7 +262,7 @@ export function NashimaAgent() {
           aria-hidden
           width={images.logoGlyph.width}
           height={images.logoGlyph.height}
-          className="h-8 w-auto brightness-[0.62] sm:h-9"
+          className="h-8 w-auto sm:h-9"
         />
       </button>
 
@@ -270,25 +270,25 @@ export function NashimaAgent() {
         <div
           role="dialog"
           aria-label="נשימה כאן — העוזרת הדיגיטלית של סטודיו נשימה"
-          className="fixed bottom-5 left-5 z-50 flex max-h-[min(620px,calc(100dvh-3rem))] w-[min(380px,calc(100vw-2.5rem))] flex-col overflow-hidden rounded-2xl border border-sand bg-cream shadow-[0_24px_60px_-20px_rgba(58,51,44,0.5)]"
+          className="fixed bottom-5 left-5 z-50 flex max-h-[min(620px,calc(100dvh-3rem))] w-[min(380px,calc(100vw-2.5rem))] flex-col overflow-hidden rounded-2xl border border-seam bg-night-soft shadow-[0_28px_70px_-18px_rgba(0,0,0,0.85)]"
         >
-          <div className="flex items-center gap-3 border-b border-sand bg-milk px-4 py-3">
+          <div className="flex items-center gap-3 border-b border-seam bg-night px-4 py-3">
             <span
               aria-hidden
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-cream-deep text-clay"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-night-lift text-dawn"
             >
               <Image
                 src={images.logoGlyph.src}
                 alt=""
                 width={images.logoGlyph.width}
                 height={images.logoGlyph.height}
-                className="h-4 w-auto brightness-[0.62]"
+                className="h-4 w-auto"
               />
             </span>
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
-                <span className="text-base">נשימה כאן</span>
-                <span className="rounded-full bg-cream-deep px-2 py-0.5 text-[11px] text-taupe">
+                <span className="text-base text-ivory">נשימה כאן</span>
+                <span className="rounded-full bg-night-lift px-2 py-0.5 text-[11px] text-dusk">
                   עוזרת דיגיטלית
                 </span>
               </div>
@@ -298,7 +298,7 @@ export function NashimaAgent() {
               onClick={resetChat}
               aria-label="שיחה חדשה"
               title="שיחה חדשה"
-              className="rounded-full p-1.5 text-taupe transition-colors hover:text-ink"
+              className="rounded-full p-1.5 text-dusk transition-colors hover:text-ivory"
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="h-4 w-4" aria-hidden>
                 <path d="M3 12a9 9 0 1 0 3-6.7" />
@@ -309,7 +309,7 @@ export function NashimaAgent() {
               type="button"
               onClick={closePanel}
               aria-label="סגירת הצ׳אט"
-              className="rounded-full p-1.5 text-taupe transition-colors hover:text-ink"
+              className="rounded-full p-1.5 text-dusk transition-colors hover:text-ivory"
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" className="h-4 w-4" aria-hidden>
                 <path d="M5 5l14 14M19 5L5 19" />
@@ -331,10 +331,10 @@ export function NashimaAgent() {
                 <div
                   className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-[15px] leading-relaxed ${
                     m.role === "user"
-                      ? "bg-clay text-cream"
+                      ? "bg-dawn font-medium text-night"
                       : m.registered
-                        ? "border border-clay/40 bg-milk text-ink"
-                        : "border border-sand bg-milk text-ink"
+                        ? "border border-dawn/50 bg-night text-ivory"
+                        : "border border-seam bg-night text-ivory"
                   }`}
                 >
                   {renderRich(m.text)}
@@ -343,7 +343,7 @@ export function NashimaAgent() {
             ))}
             {busy && (
               <div className="flex justify-end">
-                <div className="rounded-2xl border border-sand bg-milk px-3.5 py-2.5 text-sm text-taupe">
+                <div className="rounded-2xl border border-seam bg-night px-3.5 py-2.5 text-sm text-dusk">
                   כותבת…
                 </div>
               </div>
@@ -355,7 +355,7 @@ export function NashimaAgent() {
               e.preventDefault();
               void send(draft);
             }}
-            className="flex items-end gap-2 border-t border-sand bg-milk px-3 py-3"
+            className="flex items-end gap-2 border-t border-seam bg-night px-3 py-3"
           >
             <label htmlFor="nashima-agent-input" className="sr-only">
               ההודעה שלך
@@ -373,13 +373,13 @@ export function NashimaAgent() {
               }}
               placeholder="אפשר לכתוב לי כאן…"
               enterKeyHint="send"
-              className="max-h-28 min-h-[2.6rem] flex-1 resize-none rounded-xl border border-sand bg-cream px-3 py-2.5 text-[15px] text-ink placeholder:text-taupe/70 transition-colors focus:border-clay focus:ring-2 focus:ring-clay/30 focus:outline-none"
+              className="max-h-28 min-h-[2.6rem] flex-1 resize-none rounded-xl border border-seam bg-night-soft px-3 py-2.5 text-[15px] text-ivory placeholder:text-dusk/60 transition-colors focus:border-dawn focus:ring-2 focus:ring-dawn/30 focus:outline-none"
             />
             <button
               type="submit"
               disabled={busy || !draft.trim()}
               aria-label="שליחת ההודעה"
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-clay text-cream transition-colors hover:bg-clay-hover disabled:cursor-not-allowed disabled:opacity-45"
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-dawn text-night transition-colors hover:bg-dawn-bright disabled:cursor-not-allowed disabled:opacity-45"
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4" aria-hidden>
                 <path d="M21 3L3 10.5l7 3 3 7L21 3z" />

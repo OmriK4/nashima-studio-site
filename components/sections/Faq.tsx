@@ -26,20 +26,20 @@ export function Faq() {
   ];
 
   return (
-    <Section id="faq" eyebrow="שאלות נפוצות" title="שאלות שחוזרות" tone="milk">
-      <div className="divide-y divide-sand border-y border-sand">
+    <Section id="faq" eyebrow="שאלות נפוצות" title="שאלות שחוזרות">
+      <div className="divide-y divide-seam border-y border-seam">
         {items.map(([q, a]) => (
           <details key={q} className="group py-5">
-            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-lg [&::-webkit-details-marker]:hidden">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-lg text-ivory transition-colors hover:text-dawn-bright [&::-webkit-details-marker]:hidden">
               {q}
               <span
                 aria-hidden
-                className="shrink-0 text-taupe transition-transform duration-200 group-open:rotate-45"
+                className="shrink-0 text-dawn transition-transform duration-200 group-open:rotate-45"
               >
                 +
               </span>
             </summary>
-            <p className="mt-3 text-ink-soft">{a}</p>
+            <p className="mt-3 text-ivory-dim">{a}</p>
           </details>
         ))}
       </div>

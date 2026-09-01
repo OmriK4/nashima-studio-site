@@ -247,7 +247,7 @@ export function NashimaAgent() {
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-label={open ? "סגירת הצ׳אט" : "פתיחת הצ׳אט עם העוזרת הדיגיטלית"}
-        className={`agent-launcher breathes fixed bottom-5 left-5 z-50 flex h-[4.25rem] w-[4.25rem] items-center justify-center rounded-full border border-dawn/35 bg-night-lift shadow-[0_10px_30px_-10px_rgba(0,0,0,0.75)] transition-[border-color,opacity] duration-300 hover:border-dawn/70 sm:h-20 sm:w-20 ${
+        className={`agent-launcher fixed bottom-5 left-5 z-50 flex h-[4.25rem] w-[4.25rem] items-center justify-center rounded-full border border-dawn/35 bg-night-lift shadow-[0_10px_30px_-10px_rgba(0,0,0,0.75)] transition-[border-color,opacity] duration-300 hover:border-dawn/70 sm:h-20 sm:w-20 ${
           open ? "pointer-events-none scale-90 opacity-0" : "opacity-100"
         }`}
       >

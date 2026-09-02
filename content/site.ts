@@ -31,9 +31,9 @@ export const morningGroup = {
   dayLabel: "יום רביעי",
   timeLabel: "07:30",
   durationLabel: "שעה",
-  startDate: "2026-10-14",
-  startDateLabel: "14 באוקטובר 2026",
-  endDateLabel: "2 בדצמבר 2026",
+  startDate: "2026-10-21",
+  startDateLabel: "21 באוקטובר 2026",
+  endDateLabel: "9 בדצמבר 2026",
   sessions: 8,
   // גודל הקבוצה הוא גודל החדר — מקור אחד, כדי ששינוי של אחד לא ישאיר
   // את השני מאחור ויסתור את מה שכתוב בדף.

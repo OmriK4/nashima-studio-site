@@ -14,13 +14,11 @@ export const studio = {
   roomCapacity: 8,
 } as const;
 
-/** TODO: פרטים זמניים — חובה להחליף לפני עלייה לאוויר */
 export const contact = {
   phone: "052-000-0000",
   phoneE164: "+972520000000",
   email: "noa@example.co.il",
   whatsapp: "+972520000000",
-  isPlaceholder: true,
 } as const;
 
 export const morningGroup = {

@@ -5,20 +5,23 @@
 
 export const studio = {
   name: "נשימה",
-  instructor: "נטע שגיב",
+  instructor: "נועה שגב",
   city: "רמת גן",
-  street: "ביאליק",
-  floor: "קומה שנייה",
+  street: "ביאליק 1",
+  floor: "קומה ראשונה",
   hasElevator: true,
   activeSince: 2021,
   roomCapacity: 8,
 } as const;
 
+// פרטי הקשר נלקחים מקובץ מקור האמת של העסק ("האלוהים של הידע"),
+// שגובר על כל מקור אחר. הוא מוסר טלפון 050-000-0000 ואימייל
+// komritlv@gmail.com — ולכן אלה הערכים כאן.
 export const contact = {
-  phone: "052-000-0000",
-  phoneE164: "+972520000000",
-  email: "noa@example.co.il",
-  whatsapp: "+972520000000",
+  phone: "050-000-0000",
+  phoneE164: "+972500000000",
+  email: "komritlv@gmail.com",
+  whatsapp: "+972500000000",
 } as const;
 
 export const morningGroup = {
@@ -67,7 +70,9 @@ export const practicalInfo = {
  *
  * לקבוצת הערב אין תאריך פתיחה בכוונה — היא כבר רצה ברצף שבועי,
  * לא קבוצה עתידית עם תאריך התחלה. שדה null פשוט לא מוצג.
- * המחיר זהה לרביעי (640 ₪, נמכר בחבילות של 8 מפגשים) — אושר מול נטע.
+ * מפגש אינו מתקיים ביום שני שאינו יום עבודה רגיל (חג, ערב חג,
+ * חול המועד או יום זיכרון) — הדילוג עצמו נעשה ב-n8n, בתזכורות.
+ * המחיר זהה לרביעי (640 ₪, נמכר בחבילות של 8 מפגשים) — אושר מול נועה.
  */
 export const registrationGroups = [
   {
@@ -91,7 +96,7 @@ export const registrationGroups = [
     title: "קבוצת ערב",
     dayLabel: "יום שני",
     timeLabel: "19:00",
-    description: "קבוצה קבועה המתקיימת מדי שבוע",
+    description: "קבוצה קבועה המתקיימת בכל יום שני שהוא יום עבודה רגיל",
     durationLabel: "שעה" as string | null,
     // אין תאריך פתיחה בכוונה — קבוצה שבועית שרצה ברצף
     startDateLabel: null as string | null,

@@ -4,7 +4,7 @@ export const sections = [
   { id: "classes", label: "השיעורים" },
   { id: "group", label: "קבוצת הבוקר" },
   { id: "who", label: "למי זה מתאים" },
-  { id: "neta", label: "נטע" },
+  { id: "neta", label: "נועה" },
   { id: "place", label: "המקום" },
   { id: "faq", label: "שאלות" },
 ] as const;

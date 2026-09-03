@@ -31,35 +31,35 @@ export const images = {
   },
   groupSideStretch: {
     src: "https://res.cloudinary.com/qxawzkp2/image/upload/v1788345462/nashima-studio/studio/studio-group-side-stretch.png",
-    alt: "קבוצת מתאמנים בישיבה מבצעת מתיחת צד בהנחיית נטע",
+    alt: "קבוצת מתאמנים בישיבה מבצעת מתיחת צד בהנחיית נועה",
   },
   groupBridge: {
     src: "https://res.cloudinary.com/qxawzkp2/image/upload/v1788345457/nashima-studio/studio/studio-group-bridge-pose.png",
-    alt: "קבוצת מתאמנים שוכבת על מזרנים בתרגיל גשר, נטע מדגימה",
+    alt: "קבוצת מתאמנים שוכבת על מזרנים בתרגיל גשר, נועה מדגימה",
   },
   oneOnOne: {
     src: "https://res.cloudinary.com/qxawzkp2/image/upload/v1788345468/nashima-studio/neta/neta-one-on-one-training.png",
-    alt: "נטע מלווה מתאמנת בתרגיל על המזרן",
+    alt: "נועה מלווה מתאמנת בתרגיל על המזרן",
   },
   netaTeaching: {
     src: "https://res.cloudinary.com/qxawzkp2/image/upload/v1788345497/nashima-studio/neta/neta-teaching-gesture.png",
-    alt: "נטע מסבירה תרגיל לקבוצה",
+    alt: "נועה מסבירה תרגיל לקבוצה",
   },
   netaPortrait: {
     src: "https://res.cloudinary.com/qxawzkp2/image/upload/v1788345483/nashima-studio/neta/neta-portrait-seated-mat.png",
-    alt: "נטע שגיב, מדריכה ובעלת סטודיו נשימה",
+    alt: "נועה שגב, מדריכה ובעלת סטודיו נשימה",
   },
   netaStanding: {
     src: "https://res.cloudinary.com/qxawzkp2/image/upload/v1788345492/nashima-studio/neta/neta-portrait-standing-full.png",
-    alt: "נטע שגיב עומדת בסטודיו",
+    alt: "נועה שגב עומדת בסטודיו",
   },
   netaCloseup: {
     src: "https://res.cloudinary.com/qxawzkp2/image/upload/v1788345486/nashima-studio/neta/neta-portrait-closeup.png",
-    alt: "נטע שגיב",
+    alt: "נועה שגב",
   },
   netaCrossedArms: {
     src: "https://res.cloudinary.com/qxawzkp2/image/upload/v1788345494/nashima-studio/neta/neta-portrait-standing-crossed-arms.png",
-    alt: "נטע שגיב",
+    alt: "נועה שגב",
   },
   equipmentFloor: {
     src: "https://res.cloudinary.com/qxawzkp2/image/upload/v1788345445/nashima-studio/studio/studio-equipment-flatlay-floor.png",
